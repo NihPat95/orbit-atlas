@@ -35,7 +35,14 @@ Tasks are tracked in `tasks/todo.md`. A task may be marked complete only after a
 
 - Protocol version 1 permits at most 1,000 unique object IDs. Numeric inputs and output buffers must be finite; a positions response contains exactly three `Float32` values per object.
 - Every outgoing client request increments the generation. The client delivers only responses matching its latest generation, and the worker ignores older incoming generations.
-- Worker errors use `INTERNAL`, `INVALID_MESSAGE`, or `NOT_INITIALIZED`. Numerical updates remain silent until Tasks 7-9 implement their response behavior.
+- Worker errors use `INTERNAL`, `INVALID_MESSAGE`, or `NOT_INITIALIZED`. Tasks 7-9 provide the pure numerical and transferable-buffer path; Task 10 connects dataset loading and those calculations to scene-driven worker updates.
+
+### Scientific motion boundary
+
+- Natural-body segments use cubic Hermite position and velocity interpolation in UTC milliseconds. The implementation returns explicit missing, invalid, out-of-range, and non-finite statuses; it never extrapolates beyond the loaded samples. Held-out Earth/Sun ICRF fixtures come from the [NASA/JPL Horizons API](https://ssd-api.jpl.nasa.gov/doc/horizons.html) and record 2 km position and 0.0001 km/s velocity tolerances at the 1900 and 2100 boundaries.
+- Normalized OMM elements are propagated offline with pinned satellite.js 6.0.1 using SGP4/WGS-72. Vallado verification case 00005 passes at epoch and +360 minutes within 0.02 km and 0.00002 km/s per axis. Results expose signed element age; the default stale threshold is two days and validity remains a separate hard boundary. The reference is [Vallado et al., Revisiting Spacetrack Report #3](https://celestrak.org/publications/AIAA/2006-6753/).
+- Satellite TEME states use Vallado Appendix C’s IAU-76/FK5 precession and four-term IAU-80 nutation transform into the common J2000-like frame. It uses a bundled leap-second table through 2017 and no live UT1, polar-motion, or Earth-orientation corrections. This deterministic educational adapter matches the published example but is not appropriate for navigation, conjunction assessment, or precise ground tracking.
+- Scientific positions and velocities remain JavaScript 64-bit numbers. Reference-frame changes alter only the origin. Camera-relative render positions are emitted as transferable `Float32Array` values: relative mode applies one km-per-unit ratio to distance and radius, while illustrative mode applies a reversible logarithmic distance compression and a separate cubic-root radius treatment without mutating scientific state.
 
 ## Dependency Graph
 

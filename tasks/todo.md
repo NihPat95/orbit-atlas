@@ -105,11 +105,11 @@
 **Dependencies:** Task 6
 **Files / scope:** `src/simulation/satellite.ts`, `src/simulation/satellite.test.ts`, `src/test/satelliteFixtures.ts` — M
 
-### Task 9: Implement reference-frame and render transforms
+### Task 9: Implement reference-frame and render transforms — COMPLETE
 
-- [ ] Sun- and Earth-centered output derives from common scientific state, including documented TEME conversion.
-- [ ] Camera-relative transforms preserve 64-bit state and emit finite transferable 32-bit buffers.
-- [ ] Scale modes change render transforms only; round-trip and non-mutation tests pass.
+- [x] Sun- and Earth-centered output derives from common scientific state, including documented TEME conversion.
+- [x] Camera-relative transforms preserve 64-bit state and emit finite transferable 32-bit buffers.
+- [x] Scale modes change render transforms only; round-trip and non-mutation tests pass.
 
 **Verification:** `npm test -- frames renderTransform`
 **Dependencies:** Tasks 7-8
@@ -117,8 +117,8 @@
 
 ## Checkpoint 3 — Scientific Review
 
-- [ ] Interpolation, SGP4, UTC, frame, origin, scale, and error tests pass.
-- [ ] Fixture tolerances and satellite limitations are documented.
+- [x] Interpolation, SGP4, UTC, frame, origin, scale, and error tests pass.
+- [x] Fixture tolerances and satellite limitations are documented.
 - [ ] User approves the scientific evidence.
 
 ## Phase 4 — Core Exploration Loop
@@ -389,3 +389,10 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - satellite.js 6.0.1 is pinned for OMM-to-SGP4 propagation. The adapter performs no network access and returns TEME km/km/s state plus signed element age and explicit `READY`, `STALE`, `OUT_OF_RANGE`, `INVALID_TIME`, `PROPAGATION_FAILED`, or `INVALID_STATE` results.
 - Five focused tests cover Vallado case 00005 at epoch and +360 minutes (0.02 km and 0.00002 km/s per-axis tolerances), two-day staleness policy, validity, propagation failure, and non-finite output.
 - `npm test -- satellitePropagation` and `npm run verify` pass with 28 total tests; the production build and dependency audit remain clean.
+
+### Task 9 — 2026-10-17
+
+- RED: `npm test -- frames renderTransform` failed because both transform modules were absent. The first TEME implementation then missed Vallado's position fixture by 0.68 km; correcting the inverse nutation rotation sign brought the published position and velocity into tolerance.
+- Ten focused tests cover Vallado's TEME-to-J2000 example (0.05 km and 0.00005 km/s per-axis tolerances), Sun/Earth origin conversion, frame and scale round trips, non-mutation, relative distance/radius ratio, illustrative compression, finite-value rejection, Float32 output, and worker transfer-list identity.
+- `tasks/plan.md` documents the fixed IAU-76/FK5 plus four-term IAU-80 adapter, frozen leap-second table, lack of live UT1/polar-motion/EOP corrections, source links, scale behavior, and the explicit non-navigation limitation.
+- `npm test -- frames renderTransform` and `npm run verify` pass with 38 total tests and a clean production build.
