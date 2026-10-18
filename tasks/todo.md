@@ -135,15 +135,17 @@
 
 **Evidence — 2026-10-17:** Red tests first failed because the worker emitted readiness but no positions. `npm test -- scene App` passes (3 focused tests); `npm run test:e2e -- scene` passes in Chromium with worker readiness, HTML labels, picking, orbit/zoom gestures, reset, and resize; `npm run verify` passes (9 files / 40 tests, lint, formatting, typecheck, and production build). Worker, camera-control, interval, and label animation listeners are all disposed during unmount. The scene identifies its deterministic motion as preview fixtures pending the published dataset.
 
-### Task 11: Add browsing, search, selection, and follow
+### Task 11: Add browsing, search, selection, and follow — COMPLETE
 
-- [ ] Browse by category and case-insensitive canonical or alternate name works.
-- [ ] Selection focuses and follows without disabling free camera movement.
-- [ ] Stop-following, recenter, selection changes, and reset behave deterministically.
+- [x] Browse by category and case-insensitive canonical or alternate name works.
+- [x] Selection focuses and follows without disabling free camera movement.
+- [x] Stop-following, recenter, selection changes, and reset behave deterministically.
 
 **Verification:** `npm test -- catalog selection && npm run test:e2e -- discovery`
 **Dependencies:** Task 10
 **Files / scope:** `src/features/catalog/CatalogPanel.tsx`, `src/features/catalog/search.ts`, `src/state/explorationStore.ts`, `src/features/catalog/CatalogPanel.test.tsx`, `tests/discovery.spec.ts` — M
+
+**Evidence — 2026-10-17:** Missing-module failures established the red state. `npm test -- catalog selection App` passes search, category, selection, follow, recenter, selection-change, and reset cases. `npm run test:e2e -- discovery scene` passes both the full discovery flow and scene regression in Chromium. `npm run verify` passes (11 files / 43 tests plus lint, formatting, typecheck, and build). OrbitControls remains active while the camera carries its user-controlled offset with a followed object.
 
 ### Task 12: Add timeline and date navigation
 

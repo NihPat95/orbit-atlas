@@ -1,6 +1,10 @@
+import { previewCatalog } from "./data/previewCatalog";
+import { CatalogPanel } from "./features/catalog/CatalogPanel";
 import { OrbitScene } from "./scene/OrbitScene";
-
-const catalogPlaceholders = ["Planets", "Moons", "Comets", "Spacecraft"];
+import {
+  explorationStore,
+  useExplorationState,
+} from "./state/explorationStore";
 
 function OrbitMark() {
   return (
@@ -20,6 +24,11 @@ function OrbitMark() {
 }
 
 export function App() {
+  const exploration = useExplorationState();
+  const selectedObject = previewCatalog.find(
+    (object) => object.id === exploration.selectedId,
+  );
+
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -38,58 +47,65 @@ export function App() {
       </header>
 
       <main className="workspace">
-        <aside aria-label="Object catalog" className="panel catalog-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Explore</p>
-              <h2>Object catalog</h2>
-            </div>
-            <span className="panel-count">25</span>
-          </div>
+        <CatalogPanel
+          objects={previewCatalog}
+          onSelect={explorationStore.select}
+          selectedId={exploration.selectedId}
+        />
 
-          <label className="search-shell" htmlFor="catalog-search">
-            <span aria-hidden="true">⌕</span>
-            <span className="sr-only">Search the object catalog</span>
-            <input
-              disabled
-              id="catalog-search"
-              placeholder="Search objects"
-              type="search"
-            />
-          </label>
-
-          <nav aria-label="Catalog categories">
-            <ul className="catalog-list">
-              {catalogPlaceholders.map((category, index) => (
-                <li className="catalog-list__item" key={category}>
-                  <span
-                    aria-hidden="true"
-                    className={`catalog-dot catalog-dot--${index + 1}`}
-                  />
-                  <span>{category}</span>
-                  <span className="catalog-list__dash" />
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <p className="panel-note">
-            The catalog will appear after the first dataset is verified.
-          </p>
-        </aside>
-
-        <OrbitScene />
+        <OrbitScene
+          focusVersion={exploration.focusVersion}
+          followingId={exploration.followingId}
+          onSelect={explorationStore.select}
+          resetVersion={exploration.resetVersion}
+          selectedId={exploration.selectedId}
+        />
 
         <aside aria-label="Object details" className="panel details-panel">
           <p className="eyebrow">Selected object</p>
-          <div aria-hidden="true" className="empty-orbit-icon">
-            <span />
-          </div>
-          <h2>Nothing selected</h2>
-          <p>
-            Choose an object from the catalog or directly from the map to see
-            its story, motion, and limitations.
-          </p>
+          {selectedObject ? (
+            <>
+              <div
+                aria-hidden="true"
+                className="selected-object-mark"
+                style={{ backgroundColor: selectedObject.color }}
+              />
+              <h2>{selectedObject.canonicalName}</h2>
+              <p>
+                {exploration.followingId === selectedObject.id
+                  ? `Following ${selectedObject.canonicalName}`
+                  : "Free camera"}
+              </p>
+              <div className="details-actions">
+                {exploration.followingId ? (
+                  <button
+                    onClick={explorationStore.stopFollowing}
+                    type="button"
+                  >
+                    Stop following
+                  </button>
+                ) : (
+                  <button onClick={explorationStore.recenter} type="button">
+                    Recenter {selectedObject.canonicalName}
+                  </button>
+                )}
+                <button onClick={explorationStore.reset} type="button">
+                  Reset exploration
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div aria-hidden="true" className="empty-orbit-icon">
+                <span />
+              </div>
+              <h2>Nothing selected</h2>
+              <p>
+                Choose an object from the catalog or directly from the map to
+                see its story, motion, and limitations.
+              </p>
+            </>
+          )}
           <dl className="metadata-preview">
             <div>
               <dt>Reference frame</dt>

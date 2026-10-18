@@ -10,9 +10,11 @@ vi.mock("./scene/OrbitScene", () => ({
 }));
 
 import { App } from "./App";
+import { explorationStore } from "./state/explorationStore";
 
 describe("App", () => {
   it("renders a loading-safe application frame", () => {
+    explorationStore.reset();
     render(<App />);
 
     expect(
@@ -24,6 +26,9 @@ describe("App", () => {
     expect(
       screen.getByRole("complementary", { name: "Object catalog" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("searchbox", { name: "Search objects" }),
+    ).toBeEnabled();
     expect(screen.getByRole("region", { name: "Space map" })).toHaveAttribute(
       "aria-busy",
       "true",

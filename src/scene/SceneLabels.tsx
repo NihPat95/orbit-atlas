@@ -8,7 +8,7 @@ interface SceneLabelsProps {
   objects: readonly PreviewObject[];
   positionsRef: MutableRefObject<Float32Array<ArrayBufferLike>>;
   onSelect?: (objectId: string) => void;
-  selectedId?: string;
+  selectedId?: string | null;
 }
 
 export function SceneLabels({

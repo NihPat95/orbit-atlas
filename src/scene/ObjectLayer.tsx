@@ -8,12 +8,14 @@ interface ObjectLayerProps {
   objects: readonly PreviewObject[];
   positionsRef: MutableRefObject<Float32Array<ArrayBufferLike>>;
   onSelect?: (objectId: string) => void;
+  selectedId?: string | null;
 }
 
 export function ObjectLayer({
   objects,
   positionsRef,
   onSelect,
+  selectedId,
 }: ObjectLayerProps) {
   const meshRef = useRef<InstancedMesh>(null);
   const transform = useMemo(() => new Object3D(), []);
@@ -34,7 +36,8 @@ export function ObjectLayer({
 
     objects.forEach((object, index) => {
       transform.position.fromArray(positions, index * 3);
-      const scale = object.category === "STAR" ? 0.52 : 0.2;
+      const baseScale = object.category === "STAR" ? 0.52 : 0.2;
+      const scale = object.id === selectedId ? baseScale * 1.65 : baseScale;
       transform.scale.setScalar(scale);
       transform.updateMatrix();
       mesh.setMatrixAt(index, transform.matrix);

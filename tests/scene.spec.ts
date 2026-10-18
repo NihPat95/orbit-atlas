@@ -16,7 +16,7 @@ test("renders a moving interactive WebGL scene with reset and labels", async ({
   const scene = page.getByTestId("orbit-scene");
   await expect(scene).toBeVisible();
   await expect(page.getByRole("button", { name: "Reset view" })).toBeEnabled();
-  const earthLabel = page.getByRole("button", { name: "Earth" });
+  const earthLabel = page.getByRole("button", { name: "Earth", exact: true });
   await expect(earthLabel).toBeVisible();
   await earthLabel.evaluate((button: HTMLButtonElement) => button.click());
   await expect(earthLabel).toHaveAttribute("aria-pressed", "true");

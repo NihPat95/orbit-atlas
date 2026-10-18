@@ -16,19 +16,28 @@ import { ObjectLayer } from "./ObjectLayer";
 import { SceneLabels } from "./SceneLabels";
 
 interface OrbitSceneProps {
+  followingId?: string | null;
+  focusVersion?: number;
   onSelect?: (objectId: string) => void;
+  resetVersion?: number;
+  selectedId?: string | null;
 }
 
 const SIMULATED_DAYS_PER_REAL_SECOND = 0.25;
 
-export function OrbitScene({ onSelect }: OrbitSceneProps) {
+export function OrbitScene({
+  followingId,
+  focusVersion,
+  onSelect,
+  resetVersion,
+  selectedId,
+}: OrbitSceneProps) {
   const objects = previewCatalog;
   const positionsRef = useRef<Float32Array<ArrayBufferLike>>(
     new Float32Array(objects.length * 3),
   );
   const controlsRef = useRef<CameraControllerHandle>(null);
   const [sceneCamera, setSceneCamera] = useState<Camera | null>(null);
-  const [selectedId, setSelectedId] = useState<string>();
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading",
   );
@@ -37,7 +46,6 @@ export function OrbitScene({ onSelect }: OrbitSceneProps) {
     [objects],
   );
   const handleSelect = (objectId: string): void => {
-    setSelectedId(objectId);
     onSelect?.(objectId);
   };
 
@@ -116,8 +124,16 @@ export function OrbitScene({ onSelect }: OrbitSceneProps) {
           objects={objects}
           onSelect={handleSelect}
           positionsRef={positionsRef}
+          selectedId={selectedId}
         />
-        <CameraController ref={controlsRef} />
+        <CameraController
+          focusVersion={focusVersion}
+          followingId={followingId}
+          objectIds={objectIds}
+          positionsRef={positionsRef}
+          ref={controlsRef}
+          resetVersion={resetVersion}
+        />
       </Canvas>
 
       {sceneCamera ? (
