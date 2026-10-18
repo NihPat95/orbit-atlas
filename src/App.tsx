@@ -1,3 +1,5 @@
+import { OrbitScene } from "./scene/OrbitScene";
+
 const catalogPlaceholders = ["Planets", "Moons", "Comets", "Spacecraft"];
 
 function OrbitMark() {
@@ -76,45 +78,7 @@ export function App() {
           </p>
         </aside>
 
-        <section
-          aria-busy="true"
-          aria-label="Space map"
-          className="scene-frame"
-          role="region"
-        >
-          <div className="scene-meta scene-meta--left">
-            <span>Sun-centered</span>
-            <span>Illustrative scale</span>
-          </div>
-          <div className="scene-meta scene-meta--right">
-            <span className="coordinate-readout">ICRF / J2000</span>
-          </div>
-
-          <div aria-hidden="true" className="orbital-loader">
-            <span className="orbit orbit--outer" />
-            <span className="orbit orbit--middle" />
-            <span className="orbit orbit--inner" />
-            <span className="sun-core" />
-            <span className="loading-planet loading-planet--one" />
-            <span className="loading-planet loading-planet--two" />
-          </div>
-
-          <div aria-live="polite" className="loading-message" role="status">
-            <span className="loading-message__rule" />
-            <div>
-              <strong>Preparing the star map</strong>
-              <span>Checking the catalog and motion data…</span>
-            </div>
-          </div>
-
-          <div aria-hidden="true" className="timeline-placeholder">
-            <span>1900</span>
-            <span className="timeline-placeholder__track">
-              <span className="timeline-placeholder__progress" />
-            </span>
-            <span>2100</span>
-          </div>
-        </section>
+        <OrbitScene />
 
         <aside aria-label="Object details" className="panel details-panel">
           <p className="eyebrow">Selected object</p>

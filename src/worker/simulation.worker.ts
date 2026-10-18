@@ -5,6 +5,14 @@ import {
   workerRequestSchema,
   type WorkerResponse,
 } from "./protocol";
+import {
+  isPreviewObjectId,
+  PREVIEW_DATASET_VERSION,
+  PREVIEW_EPOCH_UTC_MS,
+  previewPositionsAt,
+} from "../data/previewCatalog";
+import type { Vector3 } from "../domain/types";
+import { toRenderPositionBuffer } from "../simulation/renderTransform";
 
 interface WorkerPostTarget {
   postMessage(message: WorkerResponse, transfer: Transferable[]): void;
@@ -14,6 +22,11 @@ interface WorkerState {
   isInitialized: boolean;
   latestGeneration: number;
   objectIds: string[];
+  datasetVersion: string | null;
+  timeUtcMs: number;
+  referenceFrame: "SUN_CENTERED" | "EARTH_CENTERED";
+  cameraOriginKm: Vector3;
+  scaleMode: "ILLUSTRATIVE" | "RELATIVE";
 }
 
 export function postWorkerResponse(
@@ -35,6 +48,11 @@ export function createSimulationWorkerHandler(
     isInitialized: false,
     latestGeneration: 0,
     objectIds: [],
+    datasetVersion: null,
+    timeUtcMs: PREVIEW_EPOCH_UTC_MS,
+    referenceFrame: "SUN_CENTERED",
+    cameraOriginKm: [0, 0, 0],
+    scaleMode: "ILLUSTRATIVE",
   };
 
   return (message: unknown): void => {
@@ -57,7 +75,21 @@ export function createSimulationWorkerHandler(
     state.latestGeneration = request.generation;
 
     if (request.type === "initialize") {
+      if (
+        request.datasetVersion !== PREVIEW_DATASET_VERSION ||
+        request.objectIds.some((id) => !isPreviewObjectId(id))
+      ) {
+        postWorkerResponse(target, {
+          protocolVersion: PROTOCOL_VERSION,
+          type: "error",
+          generation: request.generation,
+          code: "INTERNAL",
+          message: "The requested preview dataset is unavailable.",
+        });
+        return;
+      }
       state.isInitialized = true;
+      state.datasetVersion = request.datasetVersion;
       state.objectIds = [...request.objectIds];
       postWorkerResponse(target, {
         protocolVersion: PROTOCOL_VERSION,
@@ -65,6 +97,7 @@ export function createSimulationWorkerHandler(
         generation: request.generation,
         objectIds: [...state.objectIds],
       });
+      emitPositions(target, state, request.generation);
       return;
     }
 
@@ -79,8 +112,47 @@ export function createSimulationWorkerHandler(
       return;
     }
 
-    // Numerical responses are added by Tasks 7-9. Protocol-valid state updates are silent for now.
+    if (request.type === "setTime") {
+      state.timeUtcMs = request.timeUtcMs;
+    } else if (request.type === "setReferenceFrame") {
+      state.referenceFrame = request.referenceFrame;
+    } else {
+      state.cameraOriginKm = request.cameraOriginKm;
+      state.scaleMode = request.scaleMode;
+    }
+    emitPositions(target, state, request.generation);
   };
+}
+
+function emitPositions(
+  target: WorkerPostTarget,
+  state: WorkerState,
+  generation: number,
+): void {
+  if (state.datasetVersion !== PREVIEW_DATASET_VERSION) {
+    return;
+  }
+  const positions = previewPositionsAt(state.objectIds, state.timeUtcMs);
+  const earth = previewPositionsAt(["earth"], state.timeUtcMs)[0];
+  const framed =
+    state.referenceFrame === "EARTH_CENTERED"
+      ? positions.map((position): Vector3 => [
+          position[0] - earth[0],
+          position[1] - earth[1],
+          position[2] - earth[2],
+        ])
+      : positions;
+  const renderPositions = toRenderPositionBuffer(framed, {
+    cameraOriginKm: state.cameraOriginKm,
+    scaleMode: state.scaleMode,
+  });
+  postWorkerResponse(target, {
+    protocolVersion: PROTOCOL_VERSION,
+    type: "positions",
+    generation,
+    objectIds: [...state.objectIds],
+    positions: renderPositions,
+  });
 }
 
 function extractGeneration(message: unknown): number {

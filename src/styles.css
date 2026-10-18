@@ -289,6 +289,14 @@ h2 {
     23rem 19rem;
 }
 
+.scene-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
+
 .scene-frame::after {
   position: absolute;
   inset: 0;
@@ -299,6 +307,97 @@ h2 {
   );
   content: "";
   pointer-events: none;
+}
+
+.scene-label-root,
+.scene-labels {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 1.5rem;
+  padding: 0.25rem 0.4rem;
+  border: 0;
+  border-left: 1px solid rgb(119 185 197 / 55%);
+  color: #c9dadd;
+  background: rgb(5 9 12 / 68%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.06em;
+  pointer-events: auto;
+  text-transform: uppercase;
+  translate: 0.65rem -50%;
+  white-space: nowrap;
+}
+
+.scene-label:hover,
+.scene-label[aria-pressed="true"],
+.scene-label:focus-visible {
+  color: var(--text-primary);
+  background: rgb(23 43 50 / 92%);
+  outline: 1px solid var(--accent-orbit);
+}
+
+.scene-status:empty {
+  display: none;
+}
+
+.scene-status {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-medium);
+  color: var(--text-secondary);
+  background: rgb(5 9 12 / 88%);
+  font-size: 0.75rem;
+  transform: translate(-50%, -50%);
+}
+
+.scene-actions {
+  position: absolute;
+  z-index: 5;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-tertiary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.5625rem;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.scene-actions button {
+  min-height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-small);
+  color: var(--text-secondary);
+  background: rgb(5 9 12 / 78%);
+  cursor: pointer;
+  font-size: 0.625rem;
+  pointer-events: auto;
+  text-transform: uppercase;
+}
+
+.scene-actions button:hover,
+.scene-actions button:focus-visible {
+  border-color: var(--accent-orbit);
+  color: var(--text-primary);
+  outline: none;
 }
 
 .scene-meta {

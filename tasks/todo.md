@@ -119,19 +119,21 @@
 
 - [x] Interpolation, SGP4, UTC, frame, origin, scale, and error tests pass.
 - [x] Fixture tolerances and satellite limitations are documented.
-- [ ] User approves the scientific evidence.
+- [x] User approves the scientific evidence.
 
 ## Phase 4 — Core Exploration Loop
 
-### Task 10: Render the interactive moving scene
+### Task 10: Render the interactive moving scene — COMPLETE
 
-- [ ] Procedural markers move from worker buffers without per-frame React rerenders.
-- [ ] Orbit, pan, zoom, spatial travel, and default-view reset work with mouse and trackpad.
-- [ ] Picking, labels, resize handling, and cleanup work without loop or listener leaks.
+- [x] Procedural markers move from worker buffers without per-frame React rerenders.
+- [x] Orbit, pan, zoom, spatial travel, and default-view reset work with mouse and trackpad.
+- [x] Picking, labels, resize handling, and cleanup work without loop or listener leaks.
 
 **Verification:** Focused unit tests and `npm run test:e2e -- scene`; manual camera exercise.
 **Dependencies:** Tasks 5-6 and 9
 **Files / scope:** `src/scene/OrbitScene.tsx`, `src/scene/ObjectLayer.tsx`, `src/scene/CameraController.tsx`, `tests/scene.spec.ts` — M
+
+**Evidence — 2026-10-17:** Red tests first failed because the worker emitted readiness but no positions. `npm test -- scene App` passes (3 focused tests); `npm run test:e2e -- scene` passes in Chromium with worker readiness, HTML labels, picking, orbit/zoom gestures, reset, and resize; `npm run verify` passes (9 files / 40 tests, lint, formatting, typecheck, and production build). Worker, camera-control, interval, and label animation listeners are all disposed during unmount. The scene identifies its deterministic motion as preview fixtures pending the published dataset.
 
 ### Task 11: Add browsing, search, selection, and follow
 
@@ -396,3 +398,7 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - Ten focused tests cover Vallado's TEME-to-J2000 example (0.05 km and 0.00005 km/s per-axis tolerances), Sun/Earth origin conversion, frame and scale round trips, non-mutation, relative distance/radius ratio, illustrative compression, finite-value rejection, Float32 output, and worker transfer-list identity.
 - `tasks/plan.md` documents the fixed IAU-76/FK5 plus four-term IAU-80 adapter, frozen leap-second table, lack of live UT1/polar-motion/EOP corrections, source links, scale behavior, and the explicit non-navigation limitation.
 - `npm test -- frames renderTransform` and `npm run verify` pass with 38 total tests and a clean production build.
+
+### Checkpoint 3 approval — 2026-10-17
+
+- User approved Checkpoint 3 and authorized work to continue with Tasks 10-12.

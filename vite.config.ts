@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 function normalizeBasePath(value: string | undefined): string {
   if (!value || value === "/") {
@@ -17,5 +17,6 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: true,
     restoreMocks: true,
+    exclude: [...configDefaults.exclude, "tests/**"],
   },
 });

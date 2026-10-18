@@ -1,5 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("./scene/OrbitScene", () => ({
+  OrbitScene: () => (
+    <section aria-busy="true" aria-label="Space map" role="region">
+      <div role="status">Preparing the star map…</div>
+    </section>
+  ),
+}));
 
 import { App } from "./App";
 
