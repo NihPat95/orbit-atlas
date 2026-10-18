@@ -67,11 +67,11 @@
 **Dependencies:** Task 4
 **Files / scope:** `src/data/datasetLoader.ts`, `src/data/checksum.ts`, `src/data/errors.ts`, `src/data/datasetLoader.test.ts` — M
 
-### Task 6: Establish the simulation-worker protocol — IN PROGRESS
+### Task 6: Establish the simulation-worker protocol — COMPLETE
 
-- [ ] Versioned unions cover initialization, time, frame, render context, positions, status, readiness, and errors.
-- [ ] Generations discard stale results after rapid updates.
-- [ ] Position arrays transfer without cloning; malformed or oversized requests are rejected.
+- [x] Versioned unions cover initialization, time, frame, render context, positions, status, readiness, and errors.
+- [x] Generations discard stale results after rapid updates.
+- [x] Position arrays transfer without cloning; malformed or oversized requests are rejected.
 
 **Verification:** `npm test -- workerProtocol`
 **Dependencies:** Tasks 4-5
@@ -79,8 +79,8 @@
 
 ## Checkpoint 2 — Contract Review
 
-- [ ] Tasks 4-6 pass schemas, loader, checksums, and protocol tests.
-- [ ] Public data and worker contracts are documented.
+- [x] Tasks 4-6 pass schemas, loader, checksums, and protocol tests.
+- [x] Public data and worker contracts are documented.
 - [ ] User approves the contracts before numerical work.
 
 ## Phase 3 — Scientific Motion
@@ -365,3 +365,9 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - RED: `npm test -- datasetLoader` failed because checksum and loader modules did not exist. GREEN: five loader scenarios pass using real `Response`, Web Crypto, schema parsing, and an injected fetch boundary.
 - Successful tests prove same-origin base-path resolution plus manifest, catalog, and ephemeris loading. Failure tests prove typed `HTTP_STATUS`, `CHECKSUM_MISMATCH`, `UNSUPPORTED_SCHEMA`, and `ABORTED` results.
 - `npm test -- datasetLoader`, `npm run typecheck`, and the full `npm run verify` gate pass with 13 total tests. SHA-256 covers served bytes before JSON parsing.
+
+### Task 6 — 2026-10-17
+
+- RED: after aligning the filename with the documented test filter, `npm test -- workerProtocol` failed because the client and protocol modules did not exist. GREEN: five focused protocol tests pass.
+- Tests cover all request variants, version/non-finite/size rejection, latest-generation delivery, transferable buffer identity, and stable malformed-message errors.
+- `npm test -- workerProtocol`, `npm run typecheck`, and the full `npm run verify` gate pass with 18 total tests. `tasks/plan.md` records the concrete dataset, error, and worker contracts.

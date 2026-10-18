@@ -25,6 +25,18 @@ Tasks are tracked in `tasks/todo.md`. A task may be marked complete only after a
 - Requests and responses include protocol version and generation; stale generations are discarded.
 - SHA-256 checksums cover served bytes. Dataset versions are deterministic content hashes.
 
+### Dataset boundary
+
+- Schema version 1 uses strict objects, UTC timestamps with offsets, finite kilometre vectors, bounded collections, lowercase slug IDs, and safe relative asset paths.
+- `DatasetManifest` owns source snapshots plus catalog and motion asset references. `DatasetCatalog` owns objects and notable events. Cross-document validation requires matching dataset versions, valid source IDs, valid event object IDs, and matching motion paths/checksums.
+- `DatasetError` has stable codes: `ABORTED`, `CHECKSUM_MISMATCH`, `HTTP_STATUS`, `INVALID_JSON`, `INVALID_SCHEMA`, `NETWORK`, and `UNSUPPORTED_SCHEMA`.
+
+### Worker boundary
+
+- Protocol version 1 permits at most 1,000 unique object IDs. Numeric inputs and output buffers must be finite; a positions response contains exactly three `Float32` values per object.
+- Every outgoing client request increments the generation. The client delivers only responses matching its latest generation, and the worker ignores older incoming generations.
+- Worker errors use `INTERNAL`, `INVALID_MESSAGE`, or `NOT_INITIALIZED`. Numerical updates remain silent until Tasks 7-9 implement their response behavior.
+
 ## Dependency Graph
 
 ```text
