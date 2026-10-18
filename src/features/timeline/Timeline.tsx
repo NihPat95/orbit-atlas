@@ -5,15 +5,18 @@ import {
   type SimulationClock,
   type TimeValidity,
 } from "../../state/simulationClock";
+import type { NotableEvent } from "../../domain/types";
+import { EventMarkers } from "./EventMarkers";
 
 interface TimelineProps {
   clock: SimulationClock;
+  events?: readonly NotableEvent[];
   validity: TimeValidity;
 }
 
 const speedOptions = [0.25, 1, 10, 30] as const;
 
-export function Timeline({ clock, validity }: TimelineProps) {
+export function Timeline({ clock, events = [], validity }: TimelineProps) {
   const state = useSimulationClockState(clock);
 
   useEffect(() => {
@@ -95,6 +98,11 @@ export function Timeline({ clock, validity }: TimelineProps) {
       >
         {state.statusMessage}
       </div>
+      <EventMarkers
+        events={events}
+        onMoveTo={(timeUtcMs) => clock.setTime(timeUtcMs, validity)}
+        validity={validity}
+      />
     </section>
   );
 }

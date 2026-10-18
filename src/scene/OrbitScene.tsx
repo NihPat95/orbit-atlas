@@ -14,6 +14,7 @@ import {
 } from "./CameraController";
 import { ObjectLayer } from "./ObjectLayer";
 import { SceneLabels } from "./SceneLabels";
+import { TrajectoryLayer } from "./TrajectoryLayer";
 
 interface OrbitSceneProps {
   followingId?: string | null;
@@ -122,6 +123,7 @@ export function OrbitScene({
           positionsRef={positionsRef}
           selectedId={selectedId}
         />
+        <TrajectoryLayer selectedId={selectedId} />
         <CameraController
           focusVersion={focusVersion}
           followingId={followingId}
@@ -140,6 +142,9 @@ export function OrbitScene({
           positionsRef={positionsRef}
           selectedId={selectedId}
         />
+      ) : null}
+      {selectedId ? (
+        <div className="trajectory-legend">Approximate preview path</div>
       ) : null}
       <div aria-live="polite" className="scene-status" role="status">
         {status === "loading" ? "Preparing the star map…" : null}

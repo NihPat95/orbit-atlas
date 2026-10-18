@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { previewCatalog, previewValidityFor } from "./data/previewCatalog";
+import { previewEvents } from "./data/previewEvents";
 import { CatalogPanel } from "./features/catalog/CatalogPanel";
 import { Timeline } from "./features/timeline/Timeline";
 import { OrbitScene } from "./scene/OrbitScene";
@@ -40,6 +41,13 @@ export function App() {
     () => previewValidityFor(exploration.selectedId),
     [exploration.selectedId],
   );
+  const selectedEvents = useMemo(
+    () =>
+      previewEvents.filter(
+        (event) => event.objectId === exploration.selectedId,
+      ),
+    [exploration.selectedId],
+  );
 
   return (
     <div className="app-shell">
@@ -75,7 +83,11 @@ export function App() {
             timeIsSupported={clock.dateStatus !== "UNSUPPORTED"}
             timeUtcMs={clock.timeUtcMs}
           />
-          <Timeline clock={simulationClock} validity={validity} />
+          <Timeline
+            clock={simulationClock}
+            events={selectedEvents}
+            validity={validity}
+          />
         </div>
 
         <aside aria-label="Object details" className="panel details-panel">

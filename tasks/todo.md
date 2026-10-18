@@ -163,19 +163,25 @@
 
 - [x] Search, select, focus, follow, time change, and reset work end-to-end.
 - [x] Camera freedom and worker responsiveness are demonstrated.
-- [ ] User approves the core interaction loop.
+- [x] User approves the core interaction loop.
+
+### Checkpoint 4 approval — 2026-10-17
+
+- User approved the core interaction checkpoint and asked implementation to continue.
 
 ## Phase 5 — Learning, Transparency, and Recovery
 
-### Task 13: Show selected trajectories and notable events
+### Task 13: Show selected trajectories and notable events — COMPLETE
 
-- [ ] The selected trajectory is distinct without implying unsupported precision.
-- [ ] Relevant events appear and can move simulation time.
-- [ ] Events outside source validity cannot request a false calculated position.
+- [x] The selected trajectory is distinct without implying unsupported precision.
+- [x] Relevant events appear and can move simulation time.
+- [x] Events outside source validity cannot request a false calculated position.
 
 **Verification:** `npm test -- trajectory events && npm run test:e2e -- events`
 **Dependencies:** Tasks 11-12
 **Files / scope:** `src/scene/TrajectoryLayer.tsx`, `src/features/timeline/EventMarkers.tsx`, `src/features/timeline/EventMarkers.test.tsx`, `tests/events.spec.ts` — M
+
+**Evidence — 2026-10-17:** Missing-module failures established the red state. `npm test -- trajectory events` passes finite sampled-guide and supported/context-only event cases. `npm run test:e2e -- events` passes the Earth event time jump and confirms the out-of-coverage ISS launch remains visible and disabled without changing time. `npm run verify` passes (14 files / 47 tests plus lint, formatting, typecheck, and build). The selected guide uses a dashed procedural line and is explicitly labeled approximate.
 
 ### Task 14: Add educational details and display controls
 
