@@ -12,6 +12,8 @@ import {
   previewCatalog,
 } from "../data/previewCatalog";
 import { SimulationWorkerClient } from "../worker/client";
+import type { PreviewObject } from "../data/previewCatalog";
+import { DataStatusView } from "../features/status/DataStatusView";
 import {
   CameraController,
   type CameraControllerHandle,
@@ -19,11 +21,13 @@ import {
 import { ObjectLayer } from "./ObjectLayer";
 import { SceneLabels } from "./SceneLabels";
 import { TrajectoryLayer } from "./TrajectoryLayer";
+import { WebGLBoundary } from "./WebGLBoundary";
 
 interface OrbitSceneProps {
   followingId?: string | null;
   focusVersion?: number;
   onSelect?: (objectId: string) => void;
+  objects?: readonly PreviewObject[];
   referenceFrame?: ReferenceFrame;
   resetVersion?: number;
   scaleMode?: ScaleMode;
@@ -32,10 +36,19 @@ interface OrbitSceneProps {
   timeUtcMs?: number;
 }
 
-export function OrbitScene({
+export function OrbitScene({ ...props }: OrbitSceneProps) {
+  return (
+    <WebGLBoundary>
+      <OrbitSceneContent {...props} />
+    </WebGLBoundary>
+  );
+}
+
+function OrbitSceneContent({
   followingId,
   focusVersion,
   onSelect,
+  objects = previewCatalog,
   referenceFrame = "SUN_CENTERED",
   resetVersion,
   scaleMode = "ILLUSTRATIVE",
@@ -43,26 +56,26 @@ export function OrbitScene({
   timeIsSupported = true,
   timeUtcMs = PREVIEW_EPOCH_UTC_MS,
 }: OrbitSceneProps) {
-  const objects = previewCatalog;
   const positionsRef = useRef<Float32Array<ArrayBufferLike>>(
     new Float32Array(objects.length * 3),
   );
   const controlsRef = useRef<CameraControllerHandle>(null);
   const clientRef = useRef<SimulationWorkerClient | null>(null);
+  const [retryVersion, setRetryVersion] = useState(0);
   const [sceneCamera, setSceneCamera] = useState<Camera | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
+  const [status, setStatus] = useState<
+    "loading" | "segment-loading" | "ready" | "error"
+  >("loading");
   const objectIds = useMemo(
     () => objects.map((object) => object.id),
     [objects],
   );
   const handleSelect = (objectId: string): void => {
+    setStatus("segment-loading");
     onSelect?.(objectId);
   };
 
   useEffect(() => {
-    let hasReceivedPositions = false;
     const worker = new Worker(
       new URL("../worker/simulation.worker.ts", import.meta.url),
       { type: "module" },
@@ -72,10 +85,7 @@ export function OrbitScene({
     const unsubscribe = client.subscribe((response) => {
       if (response.type === "positions") {
         positionsRef.current = response.positions;
-        if (!hasReceivedPositions) {
-          hasReceivedPositions = true;
-          setStatus("ready");
-        }
+        setStatus("ready");
       } else if (response.type === "error") {
         setStatus("error");
       }
@@ -90,7 +100,7 @@ export function OrbitScene({
       client.dispose();
       clientRef.current = null;
     };
-  }, [objectIds]);
+  }, [objectIds, retryVersion]);
 
   useEffect(() => {
     if (timeIsSupported) clientRef.current?.setTime(timeUtcMs);
@@ -106,7 +116,7 @@ export function OrbitScene({
 
   return (
     <div
-      aria-busy={status === "loading"}
+      aria-busy={status === "loading" || status === "segment-loading"}
       aria-label="Space map"
       className="scene-frame"
       role="region"
@@ -172,11 +182,21 @@ export function OrbitScene({
       {selectedId ? (
         <div className="trajectory-legend">Approximate preview path</div>
       ) : null}
-      <div aria-live="polite" className="scene-status" role="status">
-        {status === "loading" ? "Preparing the star map…" : null}
-        {status === "error"
-          ? "The preview motion stream could not be started."
-          : null}
+      <div aria-live="polite" className="scene-status">
+        {status === "loading" ? <DataStatusView kind="scene-loading" /> : null}
+        {status === "segment-loading" ? (
+          <DataStatusView kind="segment-loading" />
+        ) : null}
+        {status === "error" ? (
+          <DataStatusView
+            kind="error"
+            message="The preview motion stream could not be started."
+            onRetry={() => {
+              setStatus("loading");
+              setRetryVersion((version) => version + 1);
+            }}
+          />
+        ) : null}
       </div>
       <div className="scene-actions">
         <span>

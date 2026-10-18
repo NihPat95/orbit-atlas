@@ -57,6 +57,18 @@ export function App() {
       ),
     [exploration.selectedId],
   );
+  const objectErrors = useMemo<Readonly<Record<string, string>>>(() => {
+    const failedId = new URLSearchParams(window.location.search).get(
+      "failObject",
+    );
+    return failedId && previewCatalog.some(({ id }) => id === failedId)
+      ? { [failedId]: "Motion asset missing" }
+      : {};
+  }, []);
+  const availableObjects = useMemo(
+    () => previewCatalog.filter(({ id }) => !objectErrors[id]),
+    [objectErrors],
+  );
 
   return (
     <div className="app-shell">
@@ -78,6 +90,7 @@ export function App() {
       <main className="workspace">
         <CatalogPanel
           objects={previewCatalog}
+          objectErrors={objectErrors}
           onSelect={explorationStore.select}
           selectedId={exploration.selectedId}
         />
@@ -93,6 +106,7 @@ export function App() {
             focusVersion={exploration.focusVersion}
             followingId={exploration.followingId}
             onSelect={explorationStore.select}
+            objects={availableObjects}
             referenceFrame={referenceFrame}
             resetVersion={exploration.resetVersion}
             scaleMode={scaleMode}

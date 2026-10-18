@@ -2,11 +2,13 @@ import { useMemo, useState } from "react";
 
 import type { PreviewObject } from "../../data/previewCatalog";
 import { searchCatalog, type CatalogCategory } from "./search";
+import { DataStatusView } from "../status/DataStatusView";
 
 interface CatalogPanelProps {
   objects: readonly PreviewObject[];
   selectedId: string | null;
   onSelect: (objectId: string) => void;
+  objectErrors?: Readonly<Record<string, string>>;
 }
 
 const categories: readonly { id: CatalogCategory; label: string }[] = [
@@ -21,6 +23,7 @@ export function CatalogPanel({
   objects,
   selectedId,
   onSelect,
+  objectErrors = {},
 }: CatalogPanelProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CatalogCategory>("ALL");
@@ -79,7 +82,11 @@ export function CatalogPanel({
             <button
               aria-label={`${object.canonicalName}, ${categoryName(object.category)}`}
               aria-pressed={selectedId === object.id}
+              aria-describedby={
+                objectErrors[object.id] ? `${object.id}-error` : undefined
+              }
               className="catalog-result"
+              disabled={Boolean(objectErrors[object.id])}
               key={object.id}
               onClick={() => onSelect(object.id)}
               type="button"
@@ -92,11 +99,19 @@ export function CatalogPanel({
               <span>
                 <strong>{object.canonicalName}</strong>
                 <small>{categoryName(object.category)}</small>
+                {objectErrors[object.id] ? (
+                  <small
+                    className="catalog-result__error"
+                    id={`${object.id}-error`}
+                  >
+                    {objectErrors[object.id]}
+                  </small>
+                ) : null}
               </span>
             </button>
           ))
         ) : (
-          <p className="panel-note">No preview objects match this search.</p>
+          <DataStatusView kind="empty" />
         )}
       </div>
 

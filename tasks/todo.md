@@ -195,20 +195,22 @@
 
 **Evidence — 2026-10-17:** Missing-component failures established the red state. `npm test -- details displayControls App frames renderTransform` passes summary ordering, disclosure, control, shell, and numerical transform cases. `npm run test:e2e -- disclosures` confirms selection, follow state, and UTC time survive Earth-centered and relative-scale changes. `npm run verify` passes (16 files / 49 tests plus lint, formatting, typecheck, and build). All preview explanations are plain text and limitations explicitly distinguish fixtures from authoritative motion.
 
-### Task 15: Implement loading and failure recovery
+### Task 15: Implement loading and failure recovery — COMPLETE
 
-- [ ] Shell, scene, segment, empty-search, and retry states are distinguishable.
-- [ ] A bad object asset disables only that object and explains the failure.
-- [ ] Missing WebGL 2 shows an explanatory fallback instead of a broken canvas.
+- [x] Shell, scene, segment, empty-search, and retry states are distinguishable.
+- [x] A bad object asset disables only that object and explains the failure.
+- [x] Missing WebGL 2 shows an explanatory fallback instead of a broken canvas.
 
 **Verification:** `npm test -- recovery && npm run test:e2e -- failures`; manually force WebGL and network failures.
 **Dependencies:** Tasks 5-6 and 10-14
 **Files / scope:** `src/features/status/DataStatusView.tsx`, `src/scene/WebGLBoundary.tsx`, `src/features/status/DataStatusView.test.tsx`, `tests/failures.spec.ts` — M
 
+**Evidence — 2026-10-17:** Missing-component failures established the red state. `npm test -- recovery WebGLBoundary App catalog` passes distinct loading, empty, retry, object-isolation, and WebGL capability cases. `npm run test:e2e -- failures` confirms a missing Mars asset disables only Mars while Earth remains usable, and a forced WebGL 2 failure presents the fallback without mounting the scene canvas. `npm run verify` passes (18 files / 55 tests plus lint, formatting, typecheck, and build), and the complete Phase 4-5 browser suite passes (7 tests). Manual desktop review confirmed the disabled-object explanation, continued Earth selection, empty-search state, and an empty browser error log.
+
 ## Checkpoint 5 — Product Experience Review
 
-- [ ] Event, disclosure, failure, and fallback scenarios pass.
-- [ ] No UI path silently guesses a position.
+- [x] Event, disclosure, failure, and fallback scenarios pass.
+- [x] No UI path silently guesses a position.
 - [ ] User approves the fixture-backed experience.
 
 ## Phase 6 — Deterministic Data Ingestion
