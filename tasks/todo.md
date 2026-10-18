@@ -43,21 +43,21 @@
 
 - [x] Tasks 1-3 meet acceptance criteria and Definition of Done.
 - [x] Clean install, typecheck, tests, lint, formatting, and build pass.
-- [ ] User approves the tracker, dependency order, and application shell.
+- [x] User approves the tracker, dependency order, and application shell.
 
 ## Phase 2 — Runtime Contracts
 
-### Task 4: Define versioned data schemas
+### Task 4: Define versioned data schemas — COMPLETE
 
-- [ ] Schemas and derived types cover all required manifest, catalog, provenance, event, validity, confidence, and motion fields.
-- [ ] Validation rejects unsupported versions, duplicate IDs, invalid relationships, non-finite values, reversed ranges, and unsafe paths.
-- [ ] Valid and invalid fixtures prove the schema boundaries.
+- [x] Schemas and derived types cover all required manifest, catalog, provenance, event, validity, confidence, and motion fields.
+- [x] Validation rejects unsupported versions, duplicate IDs, invalid relationships, non-finite values, reversed ranges, and unsafe paths.
+- [x] Valid and invalid fixtures prove the schema boundaries.
 
 **Verification:** `npm test -- schemas && npm run typecheck`
 **Dependencies:** Task 3
 **Files / scope:** `src/domain/schemas.ts`, `src/domain/types.ts`, `src/domain/schemas.test.ts`, `src/test/dataFixtures.ts` — M
 
-### Task 5: Implement the same-origin dataset loader
+### Task 5: Implement the same-origin dataset loader — IN PROGRESS
 
 - [ ] The loader retrieves manifest, catalog, and individual motion segments from the configured base path.
 - [ ] Assets are schema-validated and SHA-256 verified before use.
@@ -349,3 +349,13 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - The production output is 0.35 kB HTML, 2.45 kB CSS, and 69.75 kB JavaScript compressed.
 - Real-browser verification at 320, 461, 768, 1024, and 1440 CSS-pixel widths found no horizontal overflow, console errors, or warnings. The desktop accessibility tree exposes the banner, catalog, space-map status, and details landmarks.
 - A build and preview using `ORBIT_ATLAS_BASE_PATH=orbit-atlas` loaded successfully at `/orbit-atlas/` with a clean console.
+
+### Checkpoint 1 approval — 2026-10-17
+
+- User approved Checkpoint 1 and authorized work to continue with Tasks 4-6.
+
+### Task 4 — 2026-10-17
+
+- RED: `npm test -- schemas` failed because the schema module did not exist. After implementation, the duplicate-object test still failed and exposed an incorrect uniqueness check; correcting it made all seven schema tests pass.
+- `npm test -- schemas`, `npm run typecheck`, and the full `npm run verify` gate pass with 8 total tests.
+- Zod 4.6.7 is pinned directly. The schemas enforce schema/protocol version 1, bounded values, safe relative paths, chronological ranges, unique IDs, source/event/asset relationships, and finite vectors. Public TypeScript contracts are derived with `z.infer`.
