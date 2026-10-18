@@ -231,15 +231,17 @@
 
 **Evidence — 2026-10-17:** The initial focused test failed because the pipeline modules did not exist. `npm test -- pipeline` passes eight integration cases covering deterministic staging, the fixture CLI, relationships, safe paths, finite vectors, chronology, provenance, and preservation of an existing public manifest after failure. `npm run data:build -- --fixtures` and `npm run data:validate` produce validated dataset `v1-26b79a1cf014feb2` with one catalog record and two assets. A second build produced identical manifest (`04f04e5…`), catalog (`c90f390…`), and motion (`f9efd13…`) SHA-256 hashes. The builder has no publication operation and writes exclusively beneath the configured staging root.
 
-### Task 17: Add JPL Horizons ingestion
+### Task 17: Add JPL Horizons ingestion — COMPLETE
 
-- [ ] The importer fetches and caches segmented natural and mission vectors without browser credentials.
-- [ ] Data normalizes into ordered ICRF/J2000-compatible samples with full provenance.
-- [ ] Fixtures cover success, provider errors, malformed data, UTC, and 1900-2100 boundaries.
+- [x] The importer fetches and caches segmented natural and mission vectors without browser credentials.
+- [x] Data normalizes into ordered ICRF/J2000-compatible samples with full provenance.
+- [x] Fixtures cover success, provider errors, malformed data, UTC, and 1900-2100 boundaries.
 
 **Verification:** `npm test -- horizons`; run a non-publishing live smoke fetch.
 **Dependencies:** Task 16
 **Files / scope:** `pipeline/sources/horizons.ts`, `pipeline/sources/normalizeHorizons.ts`, `pipeline/sources/horizons.test.ts`, `pipeline/fixtures/horizons.json` — M
+
+**Evidence — 2026-10-17:** The initial focused test failed because the Horizons modules did not exist. `npm test -- horizons` passes five recorded-fixture cases covering ICRF `KM-S` vectors, UTC conversion, 1900/2100 boundaries, provider and malformed responses, bounded HTTP retries, cache reuse, and unsupported API signatures. The adapter follows the official [Horizons API parameter contract](https://ssd-api.jpl.nasa.gov/doc/horizons.html), requesting geometric vectors with `REF_SYSTEM=ICRF`, `REF_PLANE=FRAME`, and `OUT_UNITS=KM-S`. A non-publishing `npm run data:smoke:horizons` request returned and schema-validated three Earth samples for 2026-01-01 through 2026-01-03. The official documentation is labeled 1.3 while the live payload reported signature 1.2; the adapter explicitly accepts only those two observed/documented versions and rejects unknown versions.
 
 ### Task 18: Add CelesTrak OMM ingestion
 

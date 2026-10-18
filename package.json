@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "data:build": "tsx pipeline/cli.ts build",
     "data:validate": "tsx pipeline/cli.ts validate",
+    "data:smoke:horizons": "tsx pipeline/sources/horizonsSmoke.ts",
     "perf": "playwright test tests/performance.spec.ts",
     "test:security": "vitest run --passWithNoTests security",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build"
