@@ -29,11 +29,11 @@
 **Dependencies:** Task 1
 **Files / scope:** `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts`, `index.html` — M
 
-### Task 3: Build the tested application shell — IN PROGRESS
+### Task 3: Build the tested application shell — COMPLETE
 
-- [ ] The React shell renders a loading-safe application frame without console errors.
-- [ ] Global styling provides a desktop-first, full-viewport procedural space theme.
-- [ ] A smoke test proves rendering, and the production bundle loads from a configured subpath.
+- [x] The React shell renders a loading-safe application frame without console errors.
+- [x] Global styling provides a desktop-first, full-viewport procedural space theme.
+- [x] A smoke test proves rendering, and the production bundle loads from a configured subpath.
 
 **Verification:** `npm test -- App && npm run build`; inspect the production preview in a real browser.
 **Dependencies:** Task 2
@@ -41,8 +41,8 @@
 
 ## Checkpoint 1 — Foundation Review
 
-- [ ] Tasks 1-3 meet acceptance criteria and Definition of Done.
-- [ ] Clean install, typecheck, tests, lint, formatting, and build pass.
+- [x] Tasks 1-3 meet acceptance criteria and Definition of Done.
+- [x] Clean install, typecheck, tests, lint, formatting, and build pass.
 - [ ] User approves the tracker, dependency order, and application shell.
 
 ## Phase 2 — Runtime Contracts
@@ -342,3 +342,10 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - `npm ci --ignore-scripts`, `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm test` pass.
 - `ORBIT_ATLAS_BASE_PATH=orbit-atlas npm run build` passes, verifying configurable Pages subpath support.
 - The lockfile resolves 260 packages with zero audit vulnerabilities. The execution host runs Node 26.5.1, so npm emits the expected engine warning while the project contract remains pinned to Node 24.15-24.x.
+
+### Task 3 — 2026-10-17
+
+- RED: `npm test -- App` failed because `src/App.tsx` did not exist. GREEN: the same focused command passes after implementing the shell; the full `npm run verify` gate also passes.
+- The production output is 0.35 kB HTML, 2.45 kB CSS, and 69.75 kB JavaScript compressed.
+- Real-browser verification at 320, 461, 768, 1024, and 1440 CSS-pixel widths found no horizontal overflow, console errors, or warnings. The desktop accessibility tree exposes the banner, catalog, space-map status, and details landmarks.
+- A build and preview using `ORBIT_ATLAS_BASE_PATH=orbit-atlas` loaded successfully at `/orbit-atlas/` with a clean console.
