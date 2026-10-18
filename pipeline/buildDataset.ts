@@ -174,9 +174,7 @@ function stableStringify(value: unknown): string {
   if (value !== null && typeof value === "object") {
     return `{${Object.entries(value)
       .sort(([left], [right]) => left.localeCompare(right))
-      .map(
-        ([key, entry]) => `${JSON.stringify(key)}:${stableStringify(entry)}`,
-      )
+      .map(([key, entry]) => `${JSON.stringify(key)}:${stableStringify(entry)}`)
       .join(",")}}`;
   }
   const serialized = JSON.stringify(value);

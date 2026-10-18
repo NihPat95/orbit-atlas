@@ -38,7 +38,11 @@ export async function validateDataset(
 ): Promise<DatasetValidationResult> {
   const root = resolve(datasetRoot);
   const manifestBytes = await readAsset(root, "data/manifest.json");
-  const manifest = parseJson(manifestBytes, manifestSchema, "data/manifest.json");
+  const manifest = parseJson(
+    manifestBytes,
+    manifestSchema,
+    "data/manifest.json",
+  );
   const catalogBytes = await readAsset(root, manifest.assets.catalog.path);
   const catalog = parseJson(
     catalogBytes,
@@ -82,13 +86,17 @@ export function validateDatasetBundle(
     throw new Error("Motion paths must be referenced exactly once");
   }
   if (references.length !== manifest.assets.motion.length) {
-    throw new Error("Motion asset record count does not match catalog references");
+    throw new Error(
+      "Motion asset record count does not match catalog references",
+    );
   }
 
   for (const asset of [manifest.assets.catalog, ...manifest.assets.motion]) {
     safeAssetPathSchema.parse(asset.path);
     if (!asset.path.startsWith(versionPrefix)) {
-      throw new Error(`Asset path does not belong to the dataset: ${asset.path}`);
+      throw new Error(
+        `Asset path does not belong to the dataset: ${asset.path}`,
+      );
     }
     const assetBytes = bytes.get(asset.path);
     if (!assetBytes) throw new Error(`Missing asset bytes: ${asset.path}`);
@@ -140,7 +148,11 @@ async function readAsset(root: string, path: string): Promise<Uint8Array> {
   return readFile(target);
 }
 
-function parseJson<T>(bytes: Uint8Array, schema: z.ZodType<T>, path: string): T {
+function parseJson<T>(
+  bytes: Uint8Array,
+  schema: z.ZodType<T>,
+  path: string,
+): T {
   try {
     return schema.parse(JSON.parse(textDecoder.decode(bytes)));
   } catch (error) {

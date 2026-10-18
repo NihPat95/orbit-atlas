@@ -4,10 +4,22 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { buildDataset } from "./buildDataset";
+import { runPipelineCli } from "./cli";
 import { validateDataset } from "./validateDataset";
 import type { DatasetBuildInput } from "./config";
 
 describe("dataset publication pipeline", () => {
+  it("builds and validates the recorded fixture through the CLI", async () => {
+    const stagingRoot = await mkdtemp(join(tmpdir(), "orbit-atlas-cli-"));
+
+    await expect(
+      runPipelineCli(["build", "--fixtures", "--staging", stagingRoot]),
+    ).resolves.toMatchObject({ objectCount: 1 });
+    await expect(
+      runPipelineCli(["validate", "--staging", stagingRoot]),
+    ).resolves.toMatchObject({ objectCount: 1 });
+  });
+
   it("writes byte-identical versioned assets to staging", async () => {
     const firstRoot = await mkdtemp(join(tmpdir(), "orbit-atlas-first-"));
     const secondRoot = await mkdtemp(join(tmpdir(), "orbit-atlas-second-"));
@@ -31,25 +43,40 @@ describe("dataset publication pipeline", () => {
   });
 
   it.each([
-    ["unknown event relationship", (input: DatasetBuildInput) => {
-      input.catalog.events[0]!.objectId = "missing-object";
-    }],
-    ["unsafe motion path", (input: DatasetBuildInput) => {
-      input.motionAssets[0]!.path = "../earth.json";
-    }],
-    ["non-finite vector", (input: DatasetBuildInput) => {
-      const data = input.motionAssets[0]!.data;
-      if ("samples" in data) {
-        data.samples[0]!.positionKm[0] = Number.NaN;
-      }
-    }],
-    ["reversed chronology", (input: DatasetBuildInput) => {
-      const data = input.motionAssets[0]!.data;
-      if ("samples" in data) data.samples.reverse();
-    }],
-    ["missing provenance", (input: DatasetBuildInput) => {
-      input.catalog.objects[0]!.sourceIds = ["unknown-source"];
-    }],
+    [
+      "unknown event relationship",
+      (input: DatasetBuildInput) => {
+        input.catalog.events[0]!.objectId = "missing-object";
+      },
+    ],
+    [
+      "unsafe motion path",
+      (input: DatasetBuildInput) => {
+        input.motionAssets[0]!.path = "../earth.json";
+      },
+    ],
+    [
+      "non-finite vector",
+      (input: DatasetBuildInput) => {
+        const data = input.motionAssets[0]!.data;
+        if ("samples" in data) {
+          data.samples[0]!.positionKm[0] = Number.NaN;
+        }
+      },
+    ],
+    [
+      "reversed chronology",
+      (input: DatasetBuildInput) => {
+        const data = input.motionAssets[0]!.data;
+        if ("samples" in data) data.samples.reverse();
+      },
+    ],
+    [
+      "missing provenance",
+      (input: DatasetBuildInput) => {
+        input.catalog.objects[0]!.sourceIds = ["unknown-source"];
+      },
+    ],
   ])("rejects %s before publishing", async (_label, mutate) => {
     const stagingRoot = await mkdtemp(join(tmpdir(), "orbit-atlas-invalid-"));
     const input = fixtureInput();

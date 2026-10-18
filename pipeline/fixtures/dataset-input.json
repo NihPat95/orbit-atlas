@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-10-17T20:00:00.000Z",
+  "sources": [
+    {
+      "id": "jpl-horizons",
+      "provider": "JPL_HORIZONS",
+      "retrievedAt": "2026-10-17T19:00:00.000Z",
+      "sourceEpoch": "2026-01-01T00:00:00.000Z",
+      "checksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "attribution": "NASA/JPL Horizons",
+      "sourceUrl": "https://ssd.jpl.nasa.gov/horizons/"
+    }
+  ],
+  "catalog": {
+    "objects": [
+      {
+        "id": "earth",
+        "canonicalName": "Earth",
+        "alternateNames": ["Terra"],
+        "category": "PLANET",
+        "summary": "Our home planet.",
+        "details": "Earth is the reference point for Earth-centered views.",
+        "defaultReferenceFrame": "SUN_CENTERED",
+        "scale": { "radiusKm": 6371, "illustrativeRadius": 1 },
+        "confidence": { "level": "HIGH", "summary": "JPL vectors." },
+        "limitations": ["Not suitable for navigation."],
+        "validity": {
+          "startUtc": "2026-01-01T00:00:00.000Z",
+          "endUtc": "2026-01-02T00:00:00.000Z"
+        },
+        "sourceIds": ["jpl-horizons"],
+        "motion": {
+          "kind": "EPHEMERIS",
+          "frame": "ICRF_J2000",
+          "timeSystem": "UTC",
+          "segments": [
+            {
+              "id": "2026-a",
+              "path": "motion/earth/2026-a.json",
+              "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+              "startUtc": "2026-01-01T00:00:00.000Z",
+              "endUtc": "2026-01-02T00:00:00.000Z"
+            }
+          ]
+        }
+      }
+    ],
+    "events": [
+      {
+        "id": "earth-reference",
+        "objectId": "earth",
+        "kind": "SEASONAL_MARKER",
+        "title": "Reference event",
+        "explanation": "Fixture event.",
+        "occurredAtUtc": "2026-01-01T12:00:00.000Z"
+      }
+    ]
+  },
+  "motionAssets": [
+    {
+      "path": "motion/earth/2026-a.json",
+      "data": {
+        "schemaVersion": 1,
+        "objectId": "earth",
+        "segmentId": "2026-a",
+        "frame": "ICRF_J2000",
+        "timeSystem": "UTC",
+        "startUtc": "2026-01-01T00:00:00.000Z",
+        "endUtc": "2026-01-02T00:00:00.000Z",
+        "samples": [
+          {
+            "epochUtc": "2026-01-01T00:00:00.000Z",
+            "positionKm": [149597870.7, 0, 0],
+            "velocityKmPerSecond": [0, 29.78, 0]
+          },
+          {
+            "epochUtc": "2026-01-02T00:00:00.000Z",
+            "positionKm": [149575000, 2572000, 0],
+            "velocityKmPerSecond": [-0.51, 29.77, 0]
+          }
+        ]
+      }
+    }
+  ]
+}

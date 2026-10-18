@@ -219,15 +219,17 @@
 
 ## Phase 6 — Deterministic Data Ingestion
 
-### Task 16: Build the validation-first publication pipeline — IN PROGRESS
+### Task 16: Build the validation-first publication pipeline — COMPLETE
 
-- [ ] The CLI normalizes content, calculates checksums and version, and writes only to staging.
-- [ ] Complete schema, ID, relationship, chronology, finite-value, provenance, count, and path validation gates publication.
-- [ ] Identical inputs produce byte-identical assets; failure leaves the known-good manifest untouched.
+- [x] The CLI normalizes content, calculates checksums and version, and writes only to staging.
+- [x] Complete schema, ID, relationship, chronology, finite-value, provenance, count, and path validation gates publication.
+- [x] Identical inputs produce byte-identical assets; failure leaves the known-good manifest untouched.
 
 **Verification:** `npm test -- pipeline && npm run data:build -- --fixtures && npm run data:validate`; rebuild and compare hashes.
 **Dependencies:** Task 4
 **Files / scope:** `pipeline/cli.ts`, `pipeline/buildDataset.ts`, `pipeline/validateDataset.ts`, `pipeline/buildDataset.test.ts`, `pipeline/config.ts` — M
+
+**Evidence — 2026-10-17:** The initial focused test failed because the pipeline modules did not exist. `npm test -- pipeline` passes eight integration cases covering deterministic staging, the fixture CLI, relationships, safe paths, finite vectors, chronology, provenance, and preservation of an existing public manifest after failure. `npm run data:build -- --fixtures` and `npm run data:validate` produce validated dataset `v1-26b79a1cf014feb2` with one catalog record and two assets. A second build produced identical manifest (`04f04e5…`), catalog (`c90f390…`), and motion (`f9efd13…`) SHA-256 hashes. The builder has no publication operation and writes exclusively beneath the configured staging root.
 
 ### Task 17: Add JPL Horizons ingestion
 
