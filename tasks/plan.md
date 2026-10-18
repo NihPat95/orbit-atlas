@@ -71,14 +71,14 @@ At each checkpoint, record verification evidence in `tasks/todo.md`, stop implem
 
 ## Risks and Mitigations
 
-| Risk | Impact | Mitigation |
-| --- | --- | --- |
-| Upstream rate limits or outages | High | Recorded fixtures, bounded retries, cached segmented fetches, and non-publishing smoke checks |
-| Coordinate-frame mistakes | High | Held-out authoritative vectors, explicit frame metadata, and isolated transform tests |
-| GPU precision loss | High | CPU-side 64-bit state plus camera-relative transferable 32-bit render buffers |
-| Dataset or bundle exceeds budgets | High | Segmentation, lazy loading, procedural visuals, and automated compressed-size gates |
-| GitHub Pages mixes app and data versions | High | Atomic deployment of a selected immutable dataset and cache/version tests |
-| No repository remote exists | Medium | Build workflows locally; leave remote execution and production release open until configured |
+| Risk                                       | Impact | Mitigation                                                                                          |
+| ------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------- |
+| Upstream rate limits or outages            | High   | Recorded fixtures, bounded retries, cached segmented fetches, and non-publishing smoke checks       |
+| Coordinate-frame mistakes                  | High   | Held-out authoritative vectors, explicit frame metadata, and isolated transform tests               |
+| GPU precision loss                         | High   | CPU-side 64-bit state plus camera-relative transferable 32-bit render buffers                       |
+| Dataset or bundle exceeds budgets          | High   | Segmentation, lazy loading, procedural visuals, and automated compressed-size gates                 |
+| GitHub Pages mixes app and data versions   | High   | Atomic deployment of a selected immutable dataset and cache/version tests                           |
+| No repository remote exists                | Medium | Build workflows locally; leave remote execution and production release open until configured        |
 | Accessibility is deferred by product scope | Medium | Preserve semantic HTML and keyboard basics without claiming conformance; document the redesign risk |
 
 ## Assumptions

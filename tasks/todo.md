@@ -19,17 +19,17 @@
 **Dependencies:** None
 **Files / scope:** `tasks/plan.md`, `tasks/todo.md` — S
 
-### Task 2: Configure the pinned frontend toolchain
+### Task 2: Configure the pinned frontend toolchain — COMPLETE
 
-- [ ] Node 24 and exact npm dependencies are declared and reproducibly locked.
-- [ ] Scripts cover build, dev, typecheck, lint, formatting, unit, browser, data, performance, security, and full verification.
-- [ ] Vite builds for root and configurable GitHub Pages base paths.
+- [x] Node 24 and exact npm dependencies are declared and reproducibly locked.
+- [x] Scripts cover build, dev, typecheck, lint, formatting, unit, browser, data, performance, security, and full verification.
+- [x] Vite builds for root and configurable GitHub Pages base paths.
 
 **Verification:** `npm ci && npm run build && npm run typecheck`
 **Dependencies:** Task 1
 **Files / scope:** `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts`, `index.html` — M
 
-### Task 3: Build the tested application shell
+### Task 3: Build the tested application shell — IN PROGRESS
 
 - [ ] The React shell renders a loading-safe application frame without console errors.
 - [ ] Global styling provides a desktop-first, full-viewport procedural space theme.
@@ -336,3 +336,9 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - Confirmed `tasks/plan.md` contains the architecture decisions, dependency graph, fixed 25-object catalog, checkpoints, risks, and assumptions.
 - Confirmed `tasks/todo.md` contains exactly 25 task headings and no task contains more than three acceptance-criteria checkboxes.
 - Confirmed the task-state and evidence rules require acceptance criteria, verification, Definition of Done, and checkpoint review before progression.
+
+### Task 2 — 2026-10-17
+
+- `npm ci --ignore-scripts`, `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm test` pass.
+- `ORBIT_ATLAS_BASE_PATH=orbit-atlas npm run build` passes, verifying configurable Pages subpath support.
+- The lockfile resolves 260 packages with zero audit vulnerabilities. The execution host runs Node 26.5.1, so npm emits the expected engine warning while the project contract remains pinned to Node 24.15-24.x.
