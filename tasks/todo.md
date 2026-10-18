@@ -211,11 +211,15 @@
 
 - [x] Event, disclosure, failure, and fallback scenarios pass.
 - [x] No UI path silently guesses a position.
-- [ ] User approves the fixture-backed experience.
+- [x] User approves the fixture-backed experience.
+
+### Checkpoint 5 approval — 2026-10-17
+
+- User approved the fixture-backed product experience and asked implementation to continue.
 
 ## Phase 6 — Deterministic Data Ingestion
 
-### Task 16: Build the validation-first publication pipeline
+### Task 16: Build the validation-first publication pipeline — IN PROGRESS
 
 - [ ] The CLI normalizes content, calculates checksums and version, and writes only to staging.
 - [ ] Complete schema, ID, relationship, chronology, finite-value, provenance, count, and path validation gates publication.
