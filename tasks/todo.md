@@ -57,17 +57,17 @@
 **Dependencies:** Task 3
 **Files / scope:** `src/domain/schemas.ts`, `src/domain/types.ts`, `src/domain/schemas.test.ts`, `src/test/dataFixtures.ts` — M
 
-### Task 5: Implement the same-origin dataset loader — IN PROGRESS
+### Task 5: Implement the same-origin dataset loader — COMPLETE
 
-- [ ] The loader retrieves manifest, catalog, and individual motion segments from the configured base path.
-- [ ] Assets are schema-validated and SHA-256 verified before use.
-- [ ] Unsupported, missing, corrupt, or aborted assets return typed hard-data errors without guessed positions.
+- [x] The loader retrieves manifest, catalog, and individual motion segments from the configured base path.
+- [x] Assets are schema-validated and SHA-256 verified before use.
+- [x] Unsupported, missing, corrupt, or aborted assets return typed hard-data errors without guessed positions.
 
 **Verification:** `npm test -- datasetLoader`
 **Dependencies:** Task 4
 **Files / scope:** `src/data/datasetLoader.ts`, `src/data/checksum.ts`, `src/data/errors.ts`, `src/data/datasetLoader.test.ts` — M
 
-### Task 6: Establish the simulation-worker protocol
+### Task 6: Establish the simulation-worker protocol — IN PROGRESS
 
 - [ ] Versioned unions cover initialization, time, frame, render context, positions, status, readiness, and errors.
 - [ ] Generations discard stale results after rapid updates.
@@ -359,3 +359,9 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - RED: `npm test -- schemas` failed because the schema module did not exist. After implementation, the duplicate-object test still failed and exposed an incorrect uniqueness check; correcting it made all seven schema tests pass.
 - `npm test -- schemas`, `npm run typecheck`, and the full `npm run verify` gate pass with 8 total tests.
 - Zod 4.6.7 is pinned directly. The schemas enforce schema/protocol version 1, bounded values, safe relative paths, chronological ranges, unique IDs, source/event/asset relationships, and finite vectors. Public TypeScript contracts are derived with `z.infer`.
+
+### Task 5 — 2026-10-17
+
+- RED: `npm test -- datasetLoader` failed because checksum and loader modules did not exist. GREEN: five loader scenarios pass using real `Response`, Web Crypto, schema parsing, and an injected fetch boundary.
+- Successful tests prove same-origin base-path resolution plus manifest, catalog, and ephemeris loading. Failure tests prove typed `HTTP_STATUS`, `CHECKSUM_MISMATCH`, `UNSUPPORTED_SCHEMA`, and `ABORTED` results.
+- `npm test -- datasetLoader`, `npm run typecheck`, and the full `npm run verify` gate pass with 13 total tests. SHA-256 covers served bytes before JSON parsing.
