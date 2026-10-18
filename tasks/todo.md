@@ -81,15 +81,15 @@
 
 - [x] Tasks 4-6 pass schemas, loader, checksums, and protocol tests.
 - [x] Public data and worker contracts are documented.
-- [ ] User approves the contracts before numerical work.
+- [x] User approves the contracts before numerical work.
 
 ## Phase 3 — Scientific Motion
 
-### Task 7: Add natural-body ephemeris interpolation
+### Task 7: Add natural-body ephemeris interpolation — COMPLETE
 
-- [ ] Cubic Hermite interpolation returns finite positions and velocities at endpoints and intermediate UTC times.
-- [ ] Missing segments and out-of-range times return explicit statuses.
-- [ ] Held-out fixtures pass recorded tolerances, including 1900 and 2100 boundaries.
+- [x] Cubic Hermite interpolation returns finite positions and velocities at endpoints and intermediate UTC times.
+- [x] Missing segments and out-of-range times return explicit statuses.
+- [x] Held-out fixtures pass recorded tolerances, including 1900 and 2100 boundaries.
 
 **Verification:** `npm test -- ephemeris`
 **Dependencies:** Task 6
@@ -371,3 +371,14 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - RED: after aligning the filename with the documented test filter, `npm test -- workerProtocol` failed because the client and protocol modules did not exist. GREEN: five focused protocol tests pass.
 - Tests cover all request variants, version/non-finite/size rejection, latest-generation delivery, transferable buffer identity, and stable malformed-message errors.
 - `npm test -- workerProtocol`, `npm run typecheck`, and the full `npm run verify` gate pass with 18 total tests. `tasks/plan.md` records the concrete dataset, error, and worker contracts.
+
+### Checkpoint 2 approval — 2026-10-17
+
+- User approved Checkpoint 2 and authorized work to continue with Tasks 7-9.
+
+### Task 7 — 2026-10-17
+
+- RED: `npm test -- ephemeris` failed because the interpolation and UTC modules did not exist. A subsequent red test exposed invalid-time error precedence; parsing validity before checking an explicit offset resolved it.
+- GREEN: five focused tests cover exact endpoints, missing segments, invalid and out-of-range times, explicit-offset UTC parsing, and held-out Earth/Sun ICRF vectors at the 1900 and 2100 boundaries.
+- The held-out NASA/JPL Horizons midpoint fixtures pass per-axis tolerances of 2 km position and 0.0001 km/s velocity. Fixture provenance records target, center, frame, units, retrieval time, API URL, and the UT1/future-UTC limitation.
+- `npm test -- ephemeris`, `npm run typecheck`, and `npm run verify` pass with 23 total tests and a clean production build.
