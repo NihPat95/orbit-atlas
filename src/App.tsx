@@ -1,10 +1,17 @@
-import { previewCatalog } from "./data/previewCatalog";
+import { useMemo } from "react";
+
+import { previewCatalog, previewValidityFor } from "./data/previewCatalog";
 import { CatalogPanel } from "./features/catalog/CatalogPanel";
+import { Timeline } from "./features/timeline/Timeline";
 import { OrbitScene } from "./scene/OrbitScene";
 import {
   explorationStore,
   useExplorationState,
 } from "./state/explorationStore";
+import {
+  simulationClock,
+  useSimulationClockState,
+} from "./state/simulationClock";
 
 function OrbitMark() {
   return (
@@ -25,8 +32,13 @@ function OrbitMark() {
 
 export function App() {
   const exploration = useExplorationState();
+  const clock = useSimulationClockState();
   const selectedObject = previewCatalog.find(
     (object) => object.id === exploration.selectedId,
+  );
+  const validity = useMemo(
+    () => previewValidityFor(exploration.selectedId),
+    [exploration.selectedId],
   );
 
   return (
@@ -53,13 +65,18 @@ export function App() {
           selectedId={exploration.selectedId}
         />
 
-        <OrbitScene
-          focusVersion={exploration.focusVersion}
-          followingId={exploration.followingId}
-          onSelect={explorationStore.select}
-          resetVersion={exploration.resetVersion}
-          selectedId={exploration.selectedId}
-        />
+        <div className="map-column">
+          <OrbitScene
+            focusVersion={exploration.focusVersion}
+            followingId={exploration.followingId}
+            onSelect={explorationStore.select}
+            resetVersion={exploration.resetVersion}
+            selectedId={exploration.selectedId}
+            timeIsSupported={clock.dateStatus !== "UNSUPPORTED"}
+            timeUtcMs={clock.timeUtcMs}
+          />
+          <Timeline clock={simulationClock} validity={validity} />
+        </div>
 
         <aside aria-label="Object details" className="panel details-panel">
           <p className="eyebrow">Selected object</p>

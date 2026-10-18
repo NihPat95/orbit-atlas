@@ -20,9 +20,7 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Orbit Atlas" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Preparing the star map",
-    );
+    expect(screen.getByText("Preparing the star map…")).toBeInTheDocument();
     expect(
       screen.getByRole("complementary", { name: "Object catalog" }),
     ).toBeInTheDocument();

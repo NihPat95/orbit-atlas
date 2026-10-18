@@ -21,9 +21,9 @@ interface OrbitSceneProps {
   onSelect?: (objectId: string) => void;
   resetVersion?: number;
   selectedId?: string | null;
+  timeIsSupported?: boolean;
+  timeUtcMs?: number;
 }
-
-const SIMULATED_DAYS_PER_REAL_SECOND = 0.25;
 
 export function OrbitScene({
   followingId,
@@ -31,12 +31,15 @@ export function OrbitScene({
   onSelect,
   resetVersion,
   selectedId,
+  timeIsSupported = true,
+  timeUtcMs = PREVIEW_EPOCH_UTC_MS,
 }: OrbitSceneProps) {
   const objects = previewCatalog;
   const positionsRef = useRef<Float32Array<ArrayBufferLike>>(
     new Float32Array(objects.length * 3),
   );
   const controlsRef = useRef<CameraControllerHandle>(null);
+  const clientRef = useRef<SimulationWorkerClient | null>(null);
   const [sceneCamera, setSceneCamera] = useState<Camera | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading",
@@ -56,6 +59,7 @@ export function OrbitScene({
       { type: "module" },
     );
     const client = new SimulationWorkerClient(worker);
+    clientRef.current = client;
     const unsubscribe = client.subscribe((response) => {
       if (response.type === "positions") {
         positionsRef.current = response.positions;
@@ -72,24 +76,16 @@ export function OrbitScene({
       datasetVersion: PREVIEW_DATASET_VERSION,
       objectIds,
     });
-
-    const startedAt = performance.now();
-    const tick = window.setInterval(() => {
-      const elapsedSeconds = (performance.now() - startedAt) / 1_000;
-      client.setTime(
-        Math.round(
-          PREVIEW_EPOCH_UTC_MS +
-            elapsedSeconds * SIMULATED_DAYS_PER_REAL_SECOND * 86_400_000,
-        ),
-      );
-    }, 120);
-
     return () => {
-      window.clearInterval(tick);
       unsubscribe();
       client.dispose();
+      clientRef.current = null;
     };
   }, [objectIds]);
+
+  useEffect(() => {
+    if (timeIsSupported) clientRef.current?.setTime(timeUtcMs);
+  }, [timeIsSupported, timeUtcMs]);
 
   return (
     <div

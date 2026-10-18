@@ -147,20 +147,22 @@
 
 **Evidence — 2026-10-17:** Missing-module failures established the red state. `npm test -- catalog selection App` passes search, category, selection, follow, recenter, selection-change, and reset cases. `npm run test:e2e -- discovery scene` passes both the full discovery flow and scene regression in Chromium. `npm run verify` passes (11 files / 43 tests plus lint, formatting, typecheck, and build). OrbitControls remains active while the camera carries its user-controlled offset with a followed object.
 
-### Task 12: Add timeline and date navigation
+### Task 12: Add timeline and date navigation — COMPLETE
 
-- [ ] Pause, resume, speed, scrub, and direct UTC date update the worker-owned clock.
-- [ ] Rapid scrubbing displays only the latest generation and keeps controls responsive.
-- [ ] Controls enforce validity and explain approximate, stale, or unsupported dates.
+- [x] Pause, resume, speed, scrub, and direct UTC date update the worker-owned clock.
+- [x] Rapid scrubbing displays only the latest generation and keeps controls responsive.
+- [x] Controls enforce validity and explain approximate, stale, or unsupported dates.
 
 **Verification:** `npm test -- timeline && npm run test:e2e -- timeline`
 **Dependencies:** Tasks 9-11
 **Files / scope:** `src/features/timeline/Timeline.tsx`, `src/state/simulationClock.ts`, `src/features/timeline/Timeline.test.tsx`, `tests/timeline.spec.ts` — M
 
+**Evidence — 2026-10-17:** Missing-module failures established the red state. `npm test -- timeline App scene` passes clock, UI, worker, and shell cases. `npm run test:e2e -- timeline discovery scene` passes rapid scrub, playback, stale/unsupported validity, discovery, follow, camera, reset, and resize flows in Chromium. `npm run verify` passes (12 files / 45 tests plus lint, formatting, typecheck, and build). Manual 1440×900 review confirmed the composed three-column interface, selection/follow, paused clock, free orbit movement while following, stop-following, reset, and an empty browser error log. Unsupported requests retain the worker’s last defensible position; worker response generations suppress stale results.
+
 ## Checkpoint 4 — Core Experience Review
 
-- [ ] Search, select, focus, follow, time change, and reset work end-to-end.
-- [ ] Camera freedom and worker responsiveness are demonstrated.
+- [x] Search, select, focus, follow, time change, and reset work end-to-end.
+- [x] Camera freedom and worker responsiveness are demonstrated.
 - [ ] User approves the core interaction loop.
 
 ## Phase 5 — Learning, Transparency, and Recovery

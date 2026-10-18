@@ -15,6 +15,9 @@ export interface PreviewObject {
   phaseRadians: number;
   inclinationRadians: number;
   parentId?: string;
+  validFromUtcMs?: number;
+  validToUtcMs?: number;
+  freshUntilUtcMs?: number;
 }
 
 export const previewCatalog = [
@@ -115,7 +118,40 @@ export const previewCatalog = [
     phaseRadians: 3.65,
     inclinationRadians: 0.043,
   },
+  {
+    id: "iss",
+    canonicalName: "International Space Station",
+    alternateNames: ["ISS", "Zarya"],
+    category: "SPACECRAFT",
+    color: "#eef5f6",
+    radiusKm: 0.055,
+    orbitRadiusKm: 6_791,
+    orbitalPeriodDays: 0.0646,
+    phaseRadians: 1.2,
+    inclinationRadians: 0.901,
+    parentId: "earth",
+    validFromUtcMs: Date.UTC(2025, 0, 1),
+    validToUtcMs: Date.UTC(2027, 11, 31),
+    freshUntilUtcMs: Date.UTC(2026, 0, 15),
+  },
 ] as const satisfies readonly PreviewObject[];
+
+export const PREVIEW_GLOBAL_VALIDITY = {
+  fromUtcMs: Date.UTC(1900, 0, 1),
+  toUtcMs: Date.UTC(2100, 11, 31),
+} as const;
+
+export function previewValidityFor(objectId?: string | null) {
+  const object = objectId ? previewById.get(objectId) : undefined;
+  if (!object?.validFromUtcMs || !object.validToUtcMs) {
+    return PREVIEW_GLOBAL_VALIDITY;
+  }
+  return {
+    fromUtcMs: object.validFromUtcMs,
+    toUtcMs: object.validToUtcMs,
+    freshUntilUtcMs: object.freshUntilUtcMs,
+  };
+}
 
 const previewById = new Map<string, PreviewObject>(
   previewCatalog.map((object) => [object.id, object]),
