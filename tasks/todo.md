@@ -183,15 +183,17 @@
 
 **Evidence — 2026-10-17:** Missing-module failures established the red state. `npm test -- trajectory events` passes finite sampled-guide and supported/context-only event cases. `npm run test:e2e -- events` passes the Earth event time jump and confirms the out-of-coverage ISS launch remains visible and disabled without changing time. `npm run verify` passes (14 files / 47 tests plus lint, formatting, typecheck, and build). The selected guide uses a dashed procedural line and is explicitly labeled approximate.
 
-### Task 14: Add educational details and display controls
+### Task 14: Add educational details and display controls — COMPLETE
 
-- [ ] Every selection shows a plain-language summary before optional technical details.
-- [ ] Frame, scale, confidence, source epoch, age, and limitations remain understandable.
-- [ ] Frame and scale changes preserve time, selection, scientific state, and camera freedom.
+- [x] Every selection shows a plain-language summary before optional technical details.
+- [x] Frame, scale, confidence, source epoch, age, and limitations remain understandable.
+- [x] Frame and scale changes preserve time, selection, scientific state, and camera freedom.
 
 **Verification:** `npm test -- details displayControls && npm run test:e2e -- disclosures`
 **Dependencies:** Tasks 11-13
 **Files / scope:** `src/features/details/ObjectDetails.tsx`, `src/features/display/DisplayControls.tsx`, `src/features/details/ObjectDetails.test.tsx`, `tests/disclosures.spec.ts` — M
+
+**Evidence — 2026-10-17:** Missing-component failures established the red state. `npm test -- details displayControls App frames renderTransform` passes summary ordering, disclosure, control, shell, and numerical transform cases. `npm run test:e2e -- disclosures` confirms selection, follow state, and UTC time survive Earth-centered and relative-scale changes. `npm run verify` passes (16 files / 49 tests plus lint, formatting, typecheck, and build). All preview explanations are plain text and limitations explicitly distinguish fixtures from authoritative motion.
 
 ### Task 15: Implement loading and failure recovery
 

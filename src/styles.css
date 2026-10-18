@@ -145,10 +145,41 @@ h2 {
 }
 
 .map-column {
+  position: relative;
   display: grid;
   min-width: 0;
   min-height: 0;
   grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.display-controls {
+  position: absolute;
+  z-index: 7;
+  top: 3.25rem;
+  left: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.display-controls label {
+  display: grid;
+  gap: 0.2rem;
+  color: var(--text-tertiary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+}
+
+.display-controls select {
+  min-height: 1.75rem;
+  padding: 0 1.5rem 0 0.45rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-small);
+  color: var(--text-secondary);
+  background: rgb(5 9 12 / 88%);
+  font: inherit;
+  font-size: 0.5625rem;
+  text-transform: none;
 }
 
 .panel {
@@ -265,6 +296,45 @@ h2 {
   background: transparent;
   cursor: pointer;
   font-size: 0.625rem;
+}
+
+.follow-state {
+  color: var(--accent-orbit) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.625rem !important;
+  text-transform: uppercase;
+}
+
+.technical-details {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 0.6875rem;
+}
+
+.technical-details summary {
+  padding: 0.875rem 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.technical-details ul {
+  padding-left: 1rem;
+  line-height: 1.5;
+}
+
+.technical-details .metadata-preview {
+  margin-top: 0.75rem;
+}
+
+.metadata-preview .metadata-preview__stacked {
+  display: grid;
+}
+
+.metadata-preview__stacked dd {
+  margin-top: 0.25rem;
+  line-height: 1.45;
+  text-align: left;
 }
 
 .category-tabs button[aria-pressed="true"],

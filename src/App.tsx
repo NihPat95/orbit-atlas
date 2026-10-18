@@ -1,8 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { previewCatalog, previewValidityFor } from "./data/previewCatalog";
 import { previewEvents } from "./data/previewEvents";
 import { CatalogPanel } from "./features/catalog/CatalogPanel";
+import { ObjectDetails } from "./features/details/ObjectDetails";
+import {
+  DisplayControls,
+  type ReferenceFrame,
+  type ScaleMode,
+} from "./features/display/DisplayControls";
 import { Timeline } from "./features/timeline/Timeline";
 import { OrbitScene } from "./scene/OrbitScene";
 import {
@@ -34,6 +40,9 @@ function OrbitMark() {
 export function App() {
   const exploration = useExplorationState();
   const clock = useSimulationClockState();
+  const [referenceFrame, setReferenceFrame] =
+    useState<ReferenceFrame>("SUN_CENTERED");
+  const [scaleMode, setScaleMode] = useState<ScaleMode>("ILLUSTRATIVE");
   const selectedObject = previewCatalog.find(
     (object) => object.id === exploration.selectedId,
   );
@@ -74,11 +83,19 @@ export function App() {
         />
 
         <div className="map-column">
+          <DisplayControls
+            onReferenceFrameChange={setReferenceFrame}
+            onScaleModeChange={setScaleMode}
+            referenceFrame={referenceFrame}
+            scaleMode={scaleMode}
+          />
           <OrbitScene
             focusVersion={exploration.focusVersion}
             followingId={exploration.followingId}
             onSelect={explorationStore.select}
+            referenceFrame={referenceFrame}
             resetVersion={exploration.resetVersion}
+            scaleMode={scaleMode}
             selectedId={exploration.selectedId}
             timeIsSupported={clock.dateStatus !== "UNSUPPORTED"}
             timeUtcMs={clock.timeUtcMs}
@@ -90,62 +107,16 @@ export function App() {
           />
         </div>
 
-        <aside aria-label="Object details" className="panel details-panel">
-          <p className="eyebrow">Selected object</p>
-          {selectedObject ? (
-            <>
-              <div
-                aria-hidden="true"
-                className="selected-object-mark"
-                style={{ backgroundColor: selectedObject.color }}
-              />
-              <h2>{selectedObject.canonicalName}</h2>
-              <p>
-                {exploration.followingId === selectedObject.id
-                  ? `Following ${selectedObject.canonicalName}`
-                  : "Free camera"}
-              </p>
-              <div className="details-actions">
-                {exploration.followingId ? (
-                  <button
-                    onClick={explorationStore.stopFollowing}
-                    type="button"
-                  >
-                    Stop following
-                  </button>
-                ) : (
-                  <button onClick={explorationStore.recenter} type="button">
-                    Recenter {selectedObject.canonicalName}
-                  </button>
-                )}
-                <button onClick={explorationStore.reset} type="button">
-                  Reset exploration
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div aria-hidden="true" className="empty-orbit-icon">
-                <span />
-              </div>
-              <h2>Nothing selected</h2>
-              <p>
-                Choose an object from the catalog or directly from the map to
-                see its story, motion, and limitations.
-              </p>
-            </>
-          )}
-          <dl className="metadata-preview">
-            <div>
-              <dt>Reference frame</dt>
-              <dd>Sun-centered</dd>
-            </div>
-            <div>
-              <dt>Displayed scale</dt>
-              <dd>Illustrative</dd>
-            </div>
-          </dl>
-        </aside>
+        <ObjectDetails
+          following={exploration.followingId === selectedObject?.id}
+          object={selectedObject}
+          onRecenter={explorationStore.recenter}
+          onReset={explorationStore.reset}
+          onStopFollowing={explorationStore.stopFollowing}
+          referenceFrame={referenceFrame}
+          scaleMode={scaleMode}
+          timeUtcMs={clock.timeUtcMs}
+        />
       </main>
     </div>
   );

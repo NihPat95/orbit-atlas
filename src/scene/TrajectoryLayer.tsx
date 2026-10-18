@@ -9,15 +9,25 @@ import {
 import { buildPreviewTrajectory } from "./trajectory";
 
 interface TrajectoryLayerProps {
+  referenceFrame?: "SUN_CENTERED" | "EARTH_CENTERED";
+  scaleMode?: "ILLUSTRATIVE" | "RELATIVE";
   selectedId?: string | null;
 }
 
-export function TrajectoryLayer({ selectedId }: TrajectoryLayerProps) {
+export function TrajectoryLayer({
+  referenceFrame = "SUN_CENTERED",
+  scaleMode = "ILLUSTRATIVE",
+  selectedId,
+}: TrajectoryLayerProps) {
   const trajectory = useMemo(() => {
     if (!selectedId) return null;
-    const points = buildPreviewTrajectory(selectedId).map(
-      (point) => new ThreeVector3(...point),
-    );
+    const points = buildPreviewTrajectory(
+      selectedId,
+      undefined,
+      undefined,
+      referenceFrame,
+      scaleMode,
+    ).map((point) => new ThreeVector3(...point));
     if (points.length < 3) return null;
     const geometry = new BufferGeometry().setFromPoints(points);
     const material = new LineDashedMaterial({
@@ -30,7 +40,7 @@ export function TrajectoryLayer({ selectedId }: TrajectoryLayerProps) {
     const line = new LineLoop(geometry, material);
     line.computeLineDistances();
     return line;
-  }, [selectedId]);
+  }, [referenceFrame, scaleMode, selectedId]);
 
   useEffect(
     () => () => {

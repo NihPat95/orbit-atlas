@@ -1,6 +1,10 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Camera } from "three";
+import type {
+  ReferenceFrame,
+  ScaleMode,
+} from "../features/display/DisplayControls";
 
 import {
   PREVIEW_DATASET_VERSION,
@@ -20,7 +24,9 @@ interface OrbitSceneProps {
   followingId?: string | null;
   focusVersion?: number;
   onSelect?: (objectId: string) => void;
+  referenceFrame?: ReferenceFrame;
   resetVersion?: number;
+  scaleMode?: ScaleMode;
   selectedId?: string | null;
   timeIsSupported?: boolean;
   timeUtcMs?: number;
@@ -30,7 +36,9 @@ export function OrbitScene({
   followingId,
   focusVersion,
   onSelect,
+  referenceFrame = "SUN_CENTERED",
   resetVersion,
+  scaleMode = "ILLUSTRATIVE",
   selectedId,
   timeIsSupported = true,
   timeUtcMs = PREVIEW_EPOCH_UTC_MS,
@@ -88,6 +96,14 @@ export function OrbitScene({
     if (timeIsSupported) clientRef.current?.setTime(timeUtcMs);
   }, [timeIsSupported, timeUtcMs]);
 
+  useEffect(() => {
+    clientRef.current?.setReferenceFrame(referenceFrame);
+  }, [referenceFrame]);
+
+  useEffect(() => {
+    clientRef.current?.setRenderContext([0, 0, 0], scaleMode);
+  }, [scaleMode]);
+
   return (
     <div
       aria-busy={status === "loading"}
@@ -96,8 +112,14 @@ export function OrbitScene({
       role="region"
     >
       <div className="scene-meta scene-meta--left">
-        <span>Sun-centered</span>
-        <span>Illustrative scale</span>
+        <span>
+          {referenceFrame === "SUN_CENTERED"
+            ? "Sun-centered"
+            : "Earth-centered"}
+        </span>
+        <span>
+          {scaleMode === "ILLUSTRATIVE" ? "Illustrative" : "Relative"} scale
+        </span>
       </div>
       <div className="scene-meta scene-meta--right">
         <span className="coordinate-readout">Preview fixtures · ICRF-like</span>
@@ -123,7 +145,11 @@ export function OrbitScene({
           positionsRef={positionsRef}
           selectedId={selectedId}
         />
-        <TrajectoryLayer selectedId={selectedId} />
+        <TrajectoryLayer
+          referenceFrame={referenceFrame}
+          scaleMode={scaleMode}
+          selectedId={selectedId}
+        />
         <CameraController
           focusVersion={focusVersion}
           followingId={followingId}
