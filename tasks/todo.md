@@ -95,11 +95,11 @@
 **Dependencies:** Task 6
 **Files / scope:** `src/simulation/ephemeris.ts`, `src/simulation/time.ts`, `src/simulation/ephemeris.test.ts`, `src/test/ephemerisFixtures.ts` — M
 
-### Task 8: Add satellite OMM propagation
+### Task 8: Add satellite OMM propagation — COMPLETE
 
-- [ ] Normalized OMM data propagates through SGP4 without runtime upstream requests.
-- [ ] Element age, validity, non-finite output, and propagation failure produce explicit statuses.
-- [ ] Held-out satellite vectors pass recorded tolerances near and away from epoch.
+- [x] Normalized OMM data propagates through SGP4 without runtime upstream requests.
+- [x] Element age, validity, non-finite output, and propagation failure produce explicit statuses.
+- [x] Held-out satellite vectors pass recorded tolerances near and away from epoch.
 
 **Verification:** `npm test -- satellitePropagation`
 **Dependencies:** Task 6
@@ -382,3 +382,10 @@ Evidence is appended here when a task completes. Do not pre-check acceptance cri
 - GREEN: five focused tests cover exact endpoints, missing segments, invalid and out-of-range times, explicit-offset UTC parsing, and held-out Earth/Sun ICRF vectors at the 1900 and 2100 boundaries.
 - The held-out NASA/JPL Horizons midpoint fixtures pass per-axis tolerances of 2 km position and 0.0001 km/s velocity. Fixture provenance records target, center, frame, units, retrieval time, API URL, and the UT1/future-UTC limitation.
 - `npm test -- ephemeris`, `npm run typecheck`, and `npm run verify` pass with 23 total tests and a clean production build.
+
+### Task 8 — 2026-10-17
+
+- RED: `npm test -- satellitePropagation` failed because the satellite module did not exist. The first implementation then failed the held-out cases and exposed a fixture transcription error; correcting the elements to the official Vallado case made the verification vectors pass.
+- satellite.js 6.0.1 is pinned for OMM-to-SGP4 propagation. The adapter performs no network access and returns TEME km/km/s state plus signed element age and explicit `READY`, `STALE`, `OUT_OF_RANGE`, `INVALID_TIME`, `PROPAGATION_FAILED`, or `INVALID_STATE` results.
+- Five focused tests cover Vallado case 00005 at epoch and +360 minutes (0.02 km and 0.00002 km/s per-axis tolerances), two-day staleness policy, validity, propagation failure, and non-finite output.
+- `npm test -- satellitePropagation` and `npm run verify` pass with 28 total tests; the production build and dependency audit remain clean.
