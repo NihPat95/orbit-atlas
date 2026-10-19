@@ -259,31 +259,39 @@
 
 - [x] Fixture builds are deterministic and publication is failure-safe.
 - [x] JPL and CelesTrak live smoke fetches validate without publication.
-- [ ] User approves provenance and provider behavior.
+- [x] User approves provenance and provider behavior.
+
+### Checkpoint 6 approval — 2026-10-18
+
+- User approved the ingestion checkpoint and asked implementation to continue.
 
 ## Phase 7 — Representative Catalog and Dataset
 
-### Task 19: Curate the 20 natural objects
+### Task 19: Curate the 20 natural objects — COMPLETE
 
-- [ ] Content covers the fixed 20-object natural catalog.
-- [ ] Every record includes required names, explanation, metadata, validity, attribution, and limits.
-- [ ] Events and descriptions are source-attributed plain text and validate.
+- [x] Content covers the fixed 20-object natural catalog.
+- [x] Every record includes required names, explanation, metadata, validity, attribution, and limits.
+- [x] Events and descriptions are source-attributed plain text and validate.
 
 **Verification:** `npm run data:validate -- --content-only && npm test -- catalogContent`
 **Dependencies:** Tasks 16-17
 **Files / scope:** Natural content, event content, attribution index, and content tests — M
 
-### Task 20: Curate the five human-made objects
+**Evidence — 2026-10-18:** The initial focused test failed because the catalog content module did not exist. `npm test -- catalogContent` proves the exact fixed 20-object natural list, complete layered explanations, limitations, validity, JPL and curated attribution, plain-text safety, and schema-valid relationships. `npm run data:validate -- --content-only` validates the combined 25-object catalog with zero schema failures.
 
-- [ ] Content covers ISS, Hubble, JWST, Voyager 1, and Parker Solar Probe.
-- [ ] ISS/Hubble use CelesTrak OMM; the other missions use JPL ephemerides.
-- [ ] Ranges, ages, limits, launches, encounters, and milestones are disclosed.
+### Task 20: Curate the five human-made objects — COMPLETE
+
+- [x] Content covers ISS, Hubble, JWST, Voyager 1, and Parker Solar Probe.
+- [x] ISS/Hubble use CelesTrak OMM; the other missions use JPL ephemerides.
+- [x] Ranges, ages, limits, launches, encounters, and milestones are disclosed.
 
 **Verification:** `npm run data:validate -- --content-only && npm test -- catalogContent`
 **Dependencies:** Tasks 16-18
 **Files / scope:** Spacecraft content, event content, attribution index, and content tests — M
 
-### Task 21: Generate and integrate the versioned dataset
+**Evidence — 2026-10-18:** `npm test -- catalogContent` proves the exact ISS, Hubble, JWST, Voyager 1, and Parker Solar Probe set; CelesTrak OMM assignment for ISS/Hubble; JPL ephemeris assignment for the three deep-space missions; and schema-valid launch and milestone context with provider limitations. `npm run data:validate -- --content-only` passes for all 25 records.
+
+### Task 21: Generate and integrate the versioned dataset — IN PROGRESS
 
 - [ ] The catalog has exactly 25 objects and initial motion assets for all of them.
 - [ ] Natural coverage is 1900-2100; mission and satellite ranges match providers.

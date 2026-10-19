@@ -12,6 +12,7 @@ import {
   validateDataset,
   type DatasetValidationResult,
 } from "./validateDataset";
+import { catalogSchema } from "../src/domain/schemas";
 
 export async function runPipelineCli(
   args: string[],
@@ -32,6 +33,21 @@ export async function runPipelineCli(
       await readFile(resolve(inputPath), "utf8"),
     ) as DatasetBuildInput;
     return buildDataset(input, { stagingRoot });
+  }
+  if (command === "validate" && args.includes("--content-only")) {
+    const { naturalObjects, humanMadeObjects, notableEvents } =
+      await import("./content/catalogContent");
+    const catalog = catalogSchema.parse({
+      schemaVersion: 1,
+      datasetVersion: "content-preview",
+      objects: [...naturalObjects, ...humanMadeObjects],
+      events: notableEvents,
+    });
+    return {
+      datasetVersion: catalog.datasetVersion,
+      objectCount: catalog.objects.length,
+      assetCount: 0,
+    };
   }
   if (command === "validate") return validateDataset(stagingRoot);
   throw new Error("Usage: pipeline/cli.ts <build|validate> [options]");
