@@ -1,0 +1,60 @@
+{
+  "success": [
+    {
+      "OBJECT_NAME": "ISS (ZARYA)",
+      "OBJECT_ID": "1998-067A",
+      "EPOCH": "2026-10-17T18:00:00.000000",
+      "MEAN_MOTION": 15.49123456,
+      "ECCENTRICITY": 0.0004321,
+      "INCLINATION": 51.6412,
+      "RA_OF_ASC_NODE": 123.4567,
+      "ARG_OF_PERICENTER": 82.3456,
+      "MEAN_ANOMALY": 277.8123,
+      "EPHEMERIS_TYPE": 0,
+      "CLASSIFICATION_TYPE": "U",
+      "NORAD_CAT_ID": 25544,
+      "ELEMENT_SET_NO": 999,
+      "REV_AT_EPOCH": 45678,
+      "BSTAR": 0.00012345,
+      "MEAN_MOTION_DOT": 0.00001234,
+      "MEAN_MOTION_DDOT": 0
+    }
+  ],
+  "malformed": [
+    {
+      "OBJECT_NAME": "ISS (ZARYA)",
+      "EPOCH": "not-a-date",
+      "NORAD_CAT_ID": 25544
+    }
+  ],
+  "duplicate": [
+    {
+      "OBJECT_NAME": "ISS (ZARYA)",
+      "OBJECT_ID": "1998-067A",
+      "EPOCH": "2026-10-17T18:00:00.000000",
+      "MEAN_MOTION": 15.49123456,
+      "ECCENTRICITY": 0.0004321,
+      "INCLINATION": 51.6412,
+      "RA_OF_ASC_NODE": 123.4567,
+      "ARG_OF_PERICENTER": 82.3456,
+      "MEAN_ANOMALY": 277.8123,
+      "NORAD_CAT_ID": 25544,
+      "ELEMENT_SET_NO": 999,
+      "BSTAR": 0.00012345
+    },
+    {
+      "OBJECT_NAME": "ISS (ZARYA)",
+      "OBJECT_ID": "1998-067A",
+      "EPOCH": "2026-10-17T18:00:00.000000",
+      "MEAN_MOTION": 15.49123456,
+      "ECCENTRICITY": 0.0004321,
+      "INCLINATION": 51.6412,
+      "RA_OF_ASC_NODE": 123.4567,
+      "ARG_OF_PERICENTER": 82.3456,
+      "MEAN_ANOMALY": 277.8123,
+      "NORAD_CAT_ID": 25544,
+      "ELEMENT_SET_NO": 1000,
+      "BSTAR": 0.00012345
+    }
+  ]
+}

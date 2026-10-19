@@ -243,20 +243,22 @@
 
 **Evidence — 2026-10-17:** The initial focused test failed because the Horizons modules did not exist. `npm test -- horizons` passes five recorded-fixture cases covering ICRF `KM-S` vectors, UTC conversion, 1900/2100 boundaries, provider and malformed responses, bounded HTTP retries, cache reuse, and unsupported API signatures. The adapter follows the official [Horizons API parameter contract](https://ssd-api.jpl.nasa.gov/doc/horizons.html), requesting geometric vectors with `REF_SYSTEM=ICRF`, `REF_PLANE=FRAME`, and `OUT_UNITS=KM-S`. A non-publishing `npm run data:smoke:horizons` request returned and schema-validated three Earth samples for 2026-01-01 through 2026-01-03. The official documentation is labeled 1.3 while the live payload reported signature 1.2; the adapter explicitly accepts only those two observed/documented versions and rejects unknown versions.
 
-### Task 18: Add CelesTrak OMM ingestion
+### Task 18: Add CelesTrak OMM ingestion — COMPLETE
 
-- [ ] The importer normalizes configured NORAD records with validity and provenance.
-- [ ] Missing, malformed, duplicate, or stale records fail or return explicit stale status.
-- [ ] Recorded fixtures prove normalization and SGP4 compatibility offline.
+- [x] The importer normalizes configured NORAD records with validity and provenance.
+- [x] Missing, malformed, duplicate, or stale records fail or return explicit stale status.
+- [x] Recorded fixtures prove normalization and SGP4 compatibility offline.
 
 **Verification:** `npm test -- celestrak`; run a non-publishing live smoke fetch.
 **Dependencies:** Task 16
 **Files / scope:** `pipeline/sources/celestrak.ts`, `pipeline/sources/normalizeOmm.ts`, `pipeline/sources/celestrak.test.ts`, `pipeline/fixtures/celestrak.json` — M
 
+**Evidence — 2026-10-17:** The initial focused test failed because the CelesTrak modules did not exist. `npm test -- celestrak` passes four recorded-fixture cases covering OMM normalization, validity and provenance, current/stale status, missing and malformed objects, duplicate epochs, cache reuse, and finite SGP4 propagation. The importer follows CelesTrak's official [GP/OMM JSON query contract](https://celestrak.org/NORAD/documentation/gp-data-formats.php) using uppercase `CATNR` and explicit `FORMAT=JSON`. A non-publishing `npm run data:smoke:celestrak` request returned current ISS epoch `2026-10-17T19:43:43.038Z` and passed local SGP4 validation with `READY` status.
+
 ## Checkpoint 6 — Ingestion Review
 
-- [ ] Fixture builds are deterministic and publication is failure-safe.
-- [ ] JPL and CelesTrak live smoke fetches validate without publication.
+- [x] Fixture builds are deterministic and publication is failure-safe.
+- [x] JPL and CelesTrak live smoke fetches validate without publication.
 - [ ] User approves provenance and provider behavior.
 
 ## Phase 7 — Representative Catalog and Dataset
