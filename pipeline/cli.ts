@@ -5,9 +5,11 @@ import { pathToFileURL } from "node:url";
 import { buildDataset, type DatasetBuildResult } from "./buildDataset";
 import {
   DEFAULT_STAGING_ROOT,
+  DEFAULT_PUBLIC_DATA_ROOT,
   FIXTURE_INPUT_PATH,
   type DatasetBuildInput,
 } from "./config";
+import { generateRepresentativeDataset } from "./generateRepresentativeDataset";
 import {
   validateDataset,
   type DatasetValidationResult,
@@ -26,9 +28,11 @@ export async function runPipelineCli(
     const inputPath = args.includes("--fixtures")
       ? FIXTURE_INPUT_PATH
       : optionValue(args, "--input");
-    if (!inputPath) {
-      throw new Error("Build requires --fixtures or --input <path>");
-    }
+    if (!inputPath)
+      return generateRepresentativeDataset({
+        stagingRoot,
+        publicDataRoot: resolve(DEFAULT_PUBLIC_DATA_ROOT),
+      });
     const input = JSON.parse(
       await readFile(resolve(inputPath), "utf8"),
     ) as DatasetBuildInput;
