@@ -2,7 +2,7 @@ name: Deploy Orbit Atlas to Pages
 
 on:
   push:
-    branches: [main]
+    branches: [codex/orbit-atlas-foundation]
   workflow_dispatch:
 
 permissions:
