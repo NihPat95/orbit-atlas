@@ -345,7 +345,7 @@
 **Dependencies:** Tasks 21-23
 **Files / scope:** CI, data and Pages workflows, deployment config, rollback runbook — M
 
-**Progress evidence — 2026-10-19:** Added least-privilege CI, manual validated-dataset publication, and GitHub Pages workflows under `.github/workflows/`, with pinned action commits, Node 24, dataset validation, security audit, browser/performance gates, atomic Pages artifacts, and a rollback runbook in `OPERATIONS.md`. Local `npm run verify` passes and Ruby YAML parsing validates all three workflow files. Remote workflow execution remains open because this workspace has no configured Git remote; the user elected to keep the repository local for now.
+**Progress evidence — 2026-10-19:** Added least-privilege CI, manual validated-dataset publication, and GitHub Pages workflows under `.github/workflows/`, with pinned action commits, Node 24, dataset validation, security audit, browser/performance gates, atomic Pages artifacts, and a rollback runbook in `OPERATIONS.md`. Local `npm run verify` passes and Ruby YAML parsing validates all three workflow files. The user created and pushed `NihPat95/orbit-atlas`; the remote connector confirms the workflows and authoritative manifest are present on `codex/orbit-atlas-foundation`. Remote execution remains open because the repository default branch is currently the feature branch and no workflow run or Pages deployment has been recorded yet.
 
 ## Checkpoint 8 — Ship-Readiness Review
 

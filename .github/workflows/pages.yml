@@ -25,8 +25,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Validate dataset before packaging
-        run: npm run data:validate
+      - name: Build and validate dataset before packaging
+        run: npm run data:build && npm run data:validate
       - name: Build GitHub Pages artifact
         env:
           ORBIT_ATLAS_BASE_PATH: ${{ github.event.repository.name }}

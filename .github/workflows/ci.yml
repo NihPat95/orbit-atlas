@@ -23,8 +23,8 @@ jobs:
         run: npm ci
       - name: Verify source
         run: npm run verify
-      - name: Validate published dataset
-        run: npm run data:validate
+      - name: Build and validate published dataset
+        run: npm run data:build && npm run data:validate
       - name: Security tests and audit
         run: npm run test:security && npm audit --omit=dev --audit-level=high
 
