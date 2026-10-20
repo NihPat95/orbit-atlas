@@ -39,7 +39,16 @@ export function ObjectDetails({
     );
   }
 
-  const details = previewDetailsFor(object.id);
+  const details = object.summary
+    ? {
+        summary: object.summary,
+        facts: object.facts ?? [],
+        confidence: object.confidence ?? "Unknown",
+        sourceEpochUtc:
+          object.sourceEpochUtc ?? new Date(timeUtcMs).toISOString(),
+        limitations: object.limitations ?? "No limitation statement supplied.",
+      }
+    : previewDetailsFor(object.id);
   const ageDays = Math.floor(
     (timeUtcMs - Date.parse(details.sourceEpochUtc)) / 86_400_000,
   );
@@ -89,7 +98,7 @@ export function ObjectDetails({
             <dd>{scaleLabel(scaleMode)}</dd>
           </div>
           <div>
-            <dt>Preview confidence</dt>
+            <dt>Confidence</dt>
             <dd>{details.confidence}</dd>
           </div>
           <div>

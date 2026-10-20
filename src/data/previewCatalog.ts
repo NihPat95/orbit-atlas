@@ -7,7 +7,15 @@ export interface PreviewObject {
   id: string;
   canonicalName: string;
   alternateNames: readonly string[];
-  category: "STAR" | "PLANET" | "MOON" | "SPACECRAFT";
+  category:
+    | "STAR"
+    | "PLANET"
+    | "MOON"
+    | "DWARF_PLANET"
+    | "COMET"
+    | "SPACECRAFT"
+    | "SATELLITE"
+    | "TELESCOPE";
   color: string;
   radiusKm: number;
   orbitRadiusKm: number;
@@ -18,6 +26,11 @@ export interface PreviewObject {
   validFromUtcMs?: number;
   validToUtcMs?: number;
   freshUntilUtcMs?: number;
+  summary?: string;
+  facts?: readonly string[];
+  confidence?: string;
+  sourceEpochUtc?: string;
+  limitations?: string;
 }
 
 export const previewCatalog = [

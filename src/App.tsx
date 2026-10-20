@@ -1,7 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { previewCatalog, previewValidityFor } from "./data/previewCatalog";
+import type { PreviewObject } from "./data/previewCatalog";
 import { previewEvents } from "./data/previewEvents";
+import { createDatasetLoader } from "./data/datasetLoader";
+import { toRuntimeObjects } from "./data/runtimeCatalog";
+import type { DatasetSnapshot, NotableEvent } from "./domain/types";
 import { CatalogPanel } from "./features/catalog/CatalogPanel";
 import { ObjectDetails } from "./features/details/ObjectDetails";
 import {
@@ -38,36 +42,64 @@ function OrbitMark() {
 }
 
 export function App() {
+  const [snapshot, setSnapshot] = useState<DatasetSnapshot | null>(null);
+  const [datasetError, setDatasetError] = useState<string | null>(null);
   const exploration = useExplorationState();
   const clock = useSimulationClockState();
   const [referenceFrame, setReferenceFrame] =
     useState<ReferenceFrame>("SUN_CENTERED");
   const [scaleMode, setScaleMode] = useState<ScaleMode>("ILLUSTRATIVE");
-  const selectedObject = previewCatalog.find(
+  useEffect(() => {
+    const controller = new AbortController();
+    const loader = createDatasetLoader({
+      baseUrl: new URL(import.meta.env.BASE_URL, window.location.href),
+    });
+    void loader
+      .loadSnapshot(controller.signal)
+      .then(setSnapshot)
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted)
+          setDatasetError(
+            error instanceof Error ? error.message : "Dataset failed to load",
+          );
+      });
+    return () => controller.abort();
+  }, []);
+  const objects = useMemo<readonly PreviewObject[]>(
+    () => (snapshot ? toRuntimeObjects(snapshot.catalog) : previewCatalog),
+    [snapshot],
+  );
+  const events = (snapshot?.catalog.events ??
+    previewEvents) as readonly NotableEvent[];
+  const selectedObject = objects.find(
     (object) => object.id === exploration.selectedId,
   );
   const validity = useMemo(
-    () => previewValidityFor(exploration.selectedId),
-    [exploration.selectedId],
+    () =>
+      selectedObject?.validFromUtcMs && selectedObject.validToUtcMs
+        ? {
+            fromUtcMs: selectedObject.validFromUtcMs,
+            toUtcMs: selectedObject.validToUtcMs,
+            freshUntilUtcMs: selectedObject.freshUntilUtcMs,
+          }
+        : previewValidityFor(exploration.selectedId),
+    [exploration.selectedId, selectedObject],
   );
   const selectedEvents = useMemo(
-    () =>
-      previewEvents.filter(
-        (event) => event.objectId === exploration.selectedId,
-      ),
-    [exploration.selectedId],
+    () => events.filter((event) => event.objectId === exploration.selectedId),
+    [events, exploration.selectedId],
   );
   const objectErrors = useMemo<Readonly<Record<string, string>>>(() => {
     const failedId = new URLSearchParams(window.location.search).get(
       "failObject",
     );
-    return failedId && previewCatalog.some(({ id }) => id === failedId)
+    return failedId && objects.some(({ id }) => id === failedId)
       ? { [failedId]: "Motion asset missing" }
       : {};
-  }, []);
+  }, [objects]);
   const availableObjects = useMemo(
-    () => previewCatalog.filter(({ id }) => !objectErrors[id]),
-    [objectErrors],
+    () => objects.filter(({ id }) => !objectErrors[id]),
+    [objectErrors, objects],
   );
 
   return (
@@ -83,13 +115,17 @@ export function App() {
 
         <div className="system-state" aria-label="Application status">
           <span aria-hidden="true" className="system-state__signal" />
-          Dataset preview
+          {datasetError
+            ? "Dataset unavailable"
+            : snapshot
+              ? `Dataset ${snapshot.manifest.datasetVersion}`
+              : "Loading dataset"}
         </div>
       </header>
 
       <main className="workspace">
         <CatalogPanel
-          objects={previewCatalog}
+          objects={objects}
           objectErrors={objectErrors}
           onSelect={explorationStore.select}
           selectedId={exploration.selectedId}
@@ -103,6 +139,7 @@ export function App() {
             scaleMode={scaleMode}
           />
           <OrbitScene
+            datasetVersion={snapshot?.manifest.datasetVersion}
             focusVersion={exploration.focusVersion}
             followingId={exploration.followingId}
             onSelect={explorationStore.select}

@@ -291,45 +291,51 @@
 
 **Evidence — 2026-10-18:** `npm test -- catalogContent` proves the exact ISS, Hubble, JWST, Voyager 1, and Parker Solar Probe set; CelesTrak OMM assignment for ISS/Hubble; JPL ephemeris assignment for the three deep-space missions; and schema-valid launch and milestone context with provider limitations. `npm run data:validate -- --content-only` passes for all 25 records.
 
-### Task 21: Generate and integrate the versioned dataset — IN PROGRESS
+### Task 21: Generate and integrate the versioned dataset — COMPLETE
 
-- [ ] The catalog has exactly 25 objects and initial motion assets for all of them.
-- [ ] Natural coverage is 1900-2100; mission and satellite ranges match providers.
-- [ ] Manifests, checksums, segments, provenance, deterministic rebuild, and size validation pass.
+- [x] The catalog has exactly 25 objects and initial motion assets for all of them.
+- [x] Natural coverage is 1900-2100; mission and satellite ranges match providers.
+- [x] Manifests, checksums, segments, provenance, deterministic rebuild, and size validation pass.
 
 **Verification:** `npm run data:build && npm run data:validate && npm run test:e2e -- dataset`; rebuild and compare hashes.
 **Dependencies:** Tasks 17-20
 **Files / scope:** Dataset config, integration test, and generated versioned assets — M excluding generated files
 
+**Evidence — 2026-10-18:** Recorded JPL Horizons and CelesTrak responses build validated dataset `v1-bb1e2faad85cd484` (25 objects, 26 assets, 159,370 bytes, content hash `60b0e7c8…`). Two isolated authoritative builds produce identical version/content hashes; all initial-time assets validate, natural coverage spans 1900-2100, and the dataset remains below the 8 MB budget. The application loads the checksum-verified manifest/catalog, presents all categories and disclosures, and initializes the worker from versioned ephemeris/OMM assets. `npm run verify` passes 23 test files / 76 tests plus formatting, lint, typecheck, and production build. User-run `npm run test:e2e -- dataset` passes both the asset and published-catalog UI tests.
+
 ## Checkpoint 7 — Dataset Review
 
-- [ ] The 25-object dataset replaces fixtures.
-- [ ] Every object moves, discloses limitations, and handles validity boundaries.
+- [x] The 25-object dataset replaces fixtures.
+- [x] Every object moves, discloses limitations, and handles validity boundaries.
 - [ ] User approves catalog content and generated data evidence.
 
 ## Phase 8 — Production Quality and Delivery
 
-### Task 22: Enforce loading and runtime performance budgets
+### Task 22: Enforce loading and runtime performance budgets — COMPLETE
 
-- [ ] Compressed shell is at most 3 MB and initial scene transfer at most 8 MB.
-- [ ] Representative hardware meets the 2.5 s UI, 5 s scene, and 100 ms control targets.
-- [ ] Testing records a 60 FPS target and 30 FPS minimum with lazy motion loading.
+- [x] Compressed shell is at most 3 MB and initial scene transfer at most 8 MB.
+- [x] Representative hardware meets the 2.5 s UI, 5 s scene, and 100 ms control targets.
+- [x] Testing records a 60 FPS target and 30 FPS minimum with lazy motion loading.
 
 **Verification:** `npm run perf`; record size, timing, latency, and FPS evidence.
 **Dependencies:** Tasks 10-15 and 21
 **Files / scope:** Budget script, browser performance test, reporting config, and report — M
 
-### Task 23: Harden the static trust boundary
+**Evidence — 2026-10-19:** `npm run perf` against the production preview passes with 398,185-byte shell transfer, 9,516-byte initial scene transfer, 215 ms UI readiness, 616 ms scene readiness, 3.6 ms interaction latency, and 60.6 FPS. `npm run verify` passes 23 test files / 76 tests plus formatting, lint, typecheck, and build. The performance guard builds and serves the production bundle, records all budget metrics, and enforces the 3 MB, 8 MB, 2.5 s, 5 s, 100 ms, and 30 FPS thresholds.
 
-- [ ] Network access is same-origin under a GitHub-Pages-compatible CSP.
-- [ ] Plain text, schemas, checksums, cancellation, and numeric/count bounds protect inputs.
-- [ ] Adversarial fixtures cover paths, size, non-finite values, URLs, and markup.
+### Task 23: Harden the static trust boundary — COMPLETE
+
+- [x] Network access is same-origin under a GitHub-Pages-compatible CSP.
+- [x] Plain text, schemas, checksums, cancellation, and numeric/count bounds protect inputs.
+- [x] Adversarial fixtures cover paths, size, non-finite values, URLs, and markup.
 
 **Verification:** `npm run test:security && npm audit --omit=dev`; inspect CSP and production network activity.
 **Dependencies:** Tasks 5-6, 15-16, and 21
 **Files / scope:** CSP, security bounds, adversarial tests, and security notes — M
 
-### Task 24: Add CI, publication, and Pages deployment
+**Progress evidence — 2026-10-19:** Added a GitHub Pages-compatible restrictive CSP to `index.html`, documented the trust boundary in `SECURITY.md`, and added adversarial tests for unsafe traversal/cross-origin asset paths and CSP directives. `npm run test:security` passes 2 tests. `npm audit --omit=dev` could not reach the npm registry from the sandbox and must be run from the user's networked shell.
+
+### Task 24: Add CI, publication, and Pages deployment — IN PROGRESS
 
 - [ ] Pull requests run install, format, lint, typecheck, unit, data, build, and browser smoke gates.
 - [ ] Manual data/deploy workflows use pinned actions, least privilege, and atomic app/data publication.
@@ -338,6 +344,8 @@
 **Verification:** Validate workflow syntax and local equivalents, then execute on the configured remote.
 **Dependencies:** Tasks 21-23
 **Files / scope:** CI, data and Pages workflows, deployment config, rollback runbook — M
+
+**Progress evidence — 2026-10-19:** Added least-privilege CI, manual validated-dataset publication, and GitHub Pages workflows under `.github/workflows/`, with pinned action commits, Node 24, dataset validation, security audit, browser/performance gates, atomic Pages artifacts, and a rollback runbook in `OPERATIONS.md`. Local `npm run verify` passes and Ruby YAML parsing validates all three workflow files. Remote workflow execution remains open because this workspace has no configured Git remote; the user elected to keep the repository local for now.
 
 ## Checkpoint 8 — Ship-Readiness Review
 

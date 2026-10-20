@@ -18,6 +18,9 @@ import type {
   MotionAssetInput,
   PipelineOptions,
 } from "./config";
+import { horizonsCommands } from "./recordProviderData";
+import { normalizeHorizonsResponse } from "./sources/normalizeHorizons";
+import { normalizeOmm } from "./sources/normalizeOmm";
 import { validateDataset } from "./validateDataset";
 
 const generatedAt = "2026-10-18T00:00:00.000Z";
@@ -25,7 +28,74 @@ const generatedAt = "2026-10-18T00:00:00.000Z";
 export async function generateRepresentativeDataset(
   options: Required<PipelineOptions>,
 ) {
-  const input = representativeInput();
+  return publishInput(representativeInput(), options);
+}
+
+export async function generateAuthoritativeDataset(
+  options: Required<PipelineOptions>,
+  recordingRoot = resolve("pipeline/recordings"),
+) {
+  const objects = [...naturalObjects, ...humanMadeObjects].map((object) =>
+    structuredClone(object),
+  );
+  const sources: SourceSnapshot[] = [sourceSnapshots()[1]!];
+  const motionAssets: MotionAssetInput[] = [];
+  for (const object of objects) {
+    if (object.motion.kind === "EPHEMERIS") {
+      const segment = object.motion.segments[0]!;
+      const payload = JSON.parse(
+        await readFile(`${recordingRoot}/horizons/${object.id}.json`, "utf8"),
+      );
+      const normalized = normalizeHorizonsResponse(
+        payload,
+        {
+          objectId: object.id,
+          segmentId: segment.id,
+          command: horizonsCommands[object.id]!,
+          center: "500@10",
+          startUtc: segment.startUtc,
+          endUtc: segment.endUtc,
+          stepSize: "24",
+        },
+        { retrievedAt: generatedAt },
+      );
+      object.sourceIds = object.sourceIds.map((id) =>
+        id === "jpl-horizons" ? normalized.source.id : id,
+      );
+      sources.push(normalized.source);
+      motionAssets.push({ path: segment.path, data: normalized.series });
+    } else {
+      const payload = JSON.parse(
+        await readFile(`${recordingRoot}/celestrak/${object.id}.json`, "utf8"),
+      );
+      const noradCatalogId = object.id === "iss" ? 25544 : 20580;
+      const normalized = normalizeOmm(
+        payload,
+        { objectId: object.id, noradCatalogId },
+        { retrievedAt: generatedAt },
+      );
+      sources.push(normalized.source);
+      motionAssets.push({
+        path: object.motion.path,
+        data: normalized.elements,
+      });
+    }
+  }
+  return publishInput(
+    {
+      generatedAt,
+      sources,
+      catalog: { objects, events: notableEvents },
+      motionAssets,
+    },
+    options,
+  );
+}
+
+async function publishInput(
+  input: DatasetBuildInput,
+  options: Required<PipelineOptions>,
+) {
   const built = await buildDataset(input, options);
   await validateDataset(options.stagingRoot);
 

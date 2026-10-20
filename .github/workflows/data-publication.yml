@@ -1,0 +1,39 @@
+name: Publish dataset artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      record_provider_data:
+        description: Record fresh cached provider responses before building
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.15.0
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Record provider data when explicitly requested
+        if: inputs.record_provider_data
+        run: npm run data:record
+      - name: Build and validate staged dataset
+        run: npm run data:build && npm run data:validate
+      - name: Upload validated dataset artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: orbit-atlas-validated-dataset-${{ github.run_id }}
+          path: public/data/
+          if-no-files-found: error
+          retention-days: 30

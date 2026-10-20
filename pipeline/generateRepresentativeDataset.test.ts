@@ -3,8 +3,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { catalogSchema, manifestSchema } from "../src/domain/schemas";
-import { generateRepresentativeDataset } from "./generateRepresentativeDataset";
+import {
+  catalogSchema,
+  ephemerisSeriesSchema,
+  manifestSchema,
+  satelliteElementSetSchema,
+} from "../src/domain/schemas";
+import { generateAuthoritativeDataset } from "./generateRepresentativeDataset";
 import { validateDataset } from "./validateDataset";
 
 describe("representative dataset generation", () => {
@@ -12,11 +17,11 @@ describe("representative dataset generation", () => {
     const firstRoot = await mkdtemp(join(tmpdir(), "orbit-live-first-"));
     const secondRoot = await mkdtemp(join(tmpdir(), "orbit-live-second-"));
 
-    const first = await generateRepresentativeDataset({
+    const first = await generateAuthoritativeDataset({
       stagingRoot: join(firstRoot, "staging"),
       publicDataRoot: join(firstRoot, "public", "data"),
     });
-    const second = await generateRepresentativeDataset({
+    const second = await generateAuthoritativeDataset({
       stagingRoot: join(secondRoot, "staging"),
       publicDataRoot: join(secondRoot, "public", "data"),
     });
@@ -38,6 +43,37 @@ describe("representative dataset generation", () => {
     expect(first.contentHash).toBe(second.contentHash);
     expect(catalog.objects).toHaveLength(25);
     expect(manifest.assets.motion).toHaveLength(25);
+    const initialUtcMs = Date.UTC(2026, 9, 18);
+    for (const object of catalog.objects) {
+      if (object.motion.kind === "EPHEMERIS") {
+        const segment = ephemerisSeriesSchema.parse(
+          JSON.parse(
+            await readFile(
+              join(firstRoot, "public", object.motion.segments[0].path),
+              "utf8",
+            ),
+          ),
+        );
+        expect(segment.samples).toHaveLength(25);
+        expect(Date.parse(segment.startUtc)).toBeLessThanOrEqual(initialUtcMs);
+        expect(Date.parse(segment.endUtc)).toBeGreaterThanOrEqual(initialUtcMs);
+      } else {
+        const elements = satelliteElementSetSchema.parse(
+          JSON.parse(
+            await readFile(
+              join(firstRoot, "public", object.motion.path),
+              "utf8",
+            ),
+          ),
+        );
+        expect(Date.parse(elements.validity.startUtc)).toBeLessThanOrEqual(
+          initialUtcMs,
+        );
+        expect(Date.parse(elements.validity.endUtc)).toBeGreaterThanOrEqual(
+          initialUtcMs,
+        );
+      }
+    }
     const humanIds = new Set([
       "iss",
       "hubble",

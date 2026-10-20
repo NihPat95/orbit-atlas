@@ -24,6 +24,7 @@ import { TrajectoryLayer } from "./TrajectoryLayer";
 import { WebGLBoundary } from "./WebGLBoundary";
 
 interface OrbitSceneProps {
+  datasetVersion?: string;
   followingId?: string | null;
   focusVersion?: number;
   onSelect?: (objectId: string) => void;
@@ -45,6 +46,7 @@ export function OrbitScene({ ...props }: OrbitSceneProps) {
 }
 
 function OrbitSceneContent({
+  datasetVersion = PREVIEW_DATASET_VERSION,
   followingId,
   focusVersion,
   onSelect,
@@ -92,7 +94,7 @@ function OrbitSceneContent({
     });
     client.initialize({
       baseUrl: new URL(import.meta.env.BASE_URL, window.location.href).href,
-      datasetVersion: PREVIEW_DATASET_VERSION,
+      datasetVersion,
       objectIds,
     });
     return () => {
@@ -100,7 +102,7 @@ function OrbitSceneContent({
       client.dispose();
       clientRef.current = null;
     };
-  }, [objectIds, retryVersion]);
+  }, [datasetVersion, objectIds, retryVersion]);
 
   useEffect(() => {
     if (timeIsSupported) clientRef.current?.setTime(timeUtcMs);
@@ -132,7 +134,9 @@ function OrbitSceneContent({
         </span>
       </div>
       <div className="scene-meta scene-meta--right">
-        <span className="coordinate-readout">Preview fixtures · ICRF-like</span>
+        <span className="coordinate-readout">
+          Versioned provider data · ICRF/J2000
+        </span>
       </div>
 
       <Canvas
@@ -180,7 +184,7 @@ function OrbitSceneContent({
         />
       ) : null}
       {selectedId ? (
-        <div className="trajectory-legend">Approximate preview path</div>
+        <div className="trajectory-legend">Approximate educational path</div>
       ) : null}
       <div aria-live="polite" className="scene-status">
         {status === "loading" ? <DataStatusView kind="scene-loading" /> : null}
@@ -190,7 +194,7 @@ function OrbitSceneContent({
         {status === "error" ? (
           <DataStatusView
             kind="error"
-            message="The preview motion stream could not be started."
+            message="The versioned motion stream could not be started."
             onRetry={() => {
               setStatus("loading");
               setRetryVersion((version) => version + 1);

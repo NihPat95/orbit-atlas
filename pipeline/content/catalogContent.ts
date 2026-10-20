@@ -194,8 +194,8 @@ export const humanMadeObjects: SpaceObject[] = [
     "James Webb Space Telescope",
     ["JWST"],
     0.01,
-    "2021-12-25T00:00:00.000Z",
-    "2035-01-01T00:00:00.000Z",
+    "2021-12-25T13:01:10.000Z",
+    "2031-10-04T23:59:59.000Z",
     "An infrared observatory operating near the Sun-Earth L2 region behind a layered sunshield.",
   ),
   missionObject(
@@ -203,7 +203,7 @@ export const humanMadeObjects: SpaceObject[] = [
     "Voyager 1",
     [],
     0.00185,
-    "1977-09-05T00:00:00.000Z",
+    "1977-09-05T13:58:37.000Z",
     "2035-01-01T00:00:00.000Z",
     "The most distant human-made object, continuing an interstellar mission after encounters with Jupiter and Saturn.",
   ),
@@ -212,8 +212,8 @@ export const humanMadeObjects: SpaceObject[] = [
     "Parker Solar Probe",
     ["PSP"],
     0.0015,
-    "2018-08-12T00:00:00.000Z",
-    "2030-01-01T00:00:00.000Z",
+    "2018-08-12T08:15:15.000Z",
+    "2026-10-18T00:00:00.000Z",
     "A solar mission using repeated Venus flybys to pass through the Sun's outer atmosphere.",
   ),
 ];
@@ -316,7 +316,7 @@ function naturalObject(
         "Motion is derived from versioned NASA/JPL Horizons vector samples.",
     },
     limitations: [
-      "Interpolated ephemerides are educational and must not be used for navigation or operational prediction.",
+      "This compact release stores 25 provider states across the interval; interpolation does not preserve short-period motion and must not be used for navigation or prediction.",
     ],
     validity: naturalValidity,
     sourceIds: ["jpl-horizons", "nasa-curated"],
@@ -400,7 +400,7 @@ function missionObject(
         "Versioned JPL mission vectors support educational interpolation within the stated interval.",
     },
     limitations: [
-      "Reconstructed or predicted mission ephemerides may change and are not suitable for spacecraft operations.",
+      "This compact release stores 25 provider states across the mission interval; interpolated or predicted motion may change and is not suitable for spacecraft operations.",
     ],
     validity,
     sourceIds: ["jpl-horizons", "nasa-curated"],

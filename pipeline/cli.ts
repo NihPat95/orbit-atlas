@@ -9,7 +9,7 @@ import {
   FIXTURE_INPUT_PATH,
   type DatasetBuildInput,
 } from "./config";
-import { generateRepresentativeDataset } from "./generateRepresentativeDataset";
+import { generateAuthoritativeDataset } from "./generateRepresentativeDataset";
 import {
   validateDataset,
   type DatasetValidationResult,
@@ -29,7 +29,7 @@ export async function runPipelineCli(
       ? FIXTURE_INPUT_PATH
       : optionValue(args, "--input");
     if (!inputPath)
-      return generateRepresentativeDataset({
+      return generateAuthoritativeDataset({
         stagingRoot,
         publicDataRoot: resolve(DEFAULT_PUBLIC_DATA_ROOT),
       });

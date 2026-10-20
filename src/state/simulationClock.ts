@@ -29,11 +29,11 @@ export interface SimulationClock {
 }
 
 const initialState: SimulationClockState = {
-  timeUtcMs: Date.UTC(2026, 0, 1),
+  timeUtcMs: Date.UTC(2026, 9, 18),
   isPaused: false,
   speedDaysPerSecond: 1,
   dateStatus: "APPROXIMATE",
-  statusMessage: "Preview positions are approximate, deterministic fixtures.",
+  statusMessage: "Provider-backed positions are approximate educational data.",
   revision: 0,
 };
 
@@ -65,7 +65,7 @@ export function createSimulationClock(): SimulationClock {
     return {
       dateStatus: "APPROXIMATE",
       statusMessage:
-        "Preview positions are approximate, deterministic fixtures.",
+        "Provider-backed positions are approximate educational data.",
     };
   };
   const setTime = (timeUtcMs: number, validity: TimeValidity): boolean => {

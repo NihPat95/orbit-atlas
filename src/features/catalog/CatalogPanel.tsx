@@ -16,7 +16,11 @@ const categories: readonly { id: CatalogCategory; label: string }[] = [
   { id: "STAR", label: "Stars" },
   { id: "PLANET", label: "Planets" },
   { id: "MOON", label: "Moons" },
+  { id: "DWARF_PLANET", label: "Dwarf planets" },
+  { id: "COMET", label: "Comets" },
   { id: "SPACECRAFT", label: "Spacecraft" },
+  { id: "SATELLITE", label: "Satellites" },
+  { id: "TELESCOPE", label: "Telescopes" },
 ];
 
 export function CatalogPanel({
@@ -116,8 +120,8 @@ export function CatalogPanel({
       </div>
 
       <p className="panel-note">
-        Preview motion is deterministic and illustrative. Validated source data
-        replaces it during dataset integration.
+        Motion uses versioned, checksum-verified provider snapshots. It is an
+        educational visualization, not an operational navigation product.
       </p>
     </aside>
   );

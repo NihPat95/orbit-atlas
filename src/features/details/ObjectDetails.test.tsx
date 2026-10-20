@@ -27,7 +27,7 @@ describe("object details", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     await user.click(disclosure);
-    expect(screen.getByText("Preview confidence")).toBeVisible();
+    expect(screen.getByText("Confidence")).toBeVisible();
     expect(screen.getByText("Source epoch")).toBeVisible();
     expect(screen.getByText("Limitations")).toBeVisible();
     expect(screen.getByText("Sun-centered")).toBeVisible();
